@@ -1,5 +1,3 @@
-# Walleto
-
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
@@ -7,7 +5,7 @@
     <img src="src/assets/icon/logo.svg" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Cooking blog</h3>
+  <h3 align="center">Walleto - Manage your expenses</h3>
 </p>
 
 <!-- Table of content -->
@@ -82,6 +80,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Nhan Vu Nguyen - email@example.com
+Nhan Vu Nguyen - nguyenvunhan1999@gmail.com
 
 Project Link: [https://github.com/NguyenVuNhan/walleto-be](https://github.com/NguyenVuNhan/walleto-be)
