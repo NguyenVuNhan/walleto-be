@@ -1,0 +1,50 @@
+{
+  "name": "Walleto-be",
+  "version": "0.0.1",
+  "description": "Walleto backend",
+  "repository": "https://github.com/NguyenVuNhan",
+  "author": "Nhan Nguyen",
+  "license": "MIT",
+  "main": "build/index.js",
+  "scripts": {
+    "watch-server": "nodemon --exec ts-node src/index.ts",
+    "build-ts": "tsc",
+    "copy-static-assets": "ts-node copyStaticAssets.ts",
+    "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
+    "serve": "node build/index.js",
+    "build": "npm run lint && npm run build-ts && npm run copy-static-assets",
+    "start": "npm run serve"
+  },
+  "dependencies": {
+    "@koa/cors": "^3.1.0",
+    "@koa/router": "^10.0.0",
+    "class-validator": "^0.13.1",
+    "cron": "^1.8.2",
+    "dotenv": "^8.2.0",
+    "koa": "^2.13.1",
+    "koa-bodyparser": "^4.3.0",
+    "koa-helmet": "^6.0.0",
+    "koa-jwt": "^4.0.0",
+    "koa-swagger-decorator": "^1.7.3",
+    "typeorm": "^0.2.30",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/cron": "^1.7.2",
+    "@types/koa": "^2.11.7",
+    "@types/koa-bodyparser": "^4.3.0",
+    "@types/koa-helmet": "^6.0.1",
+    "@types/koa__cors": "^3.0.2",
+    "@types/koa__router": "^8.0.4",
+    "@types/node": "^14.14.22",
+    "@typescript-eslint/eslint-plugin": "^4.14.1",
+    "@typescript-eslint/parser": "^4.14.1",
+    "eslint": "^7.18.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "nodemon": "^2.0.7",
+    "prettier": "^2.2.1",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
+  }
+}
