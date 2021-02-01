@@ -1,0 +1,39 @@
+FROM node:14-alpine AS node
+
+
+# Build stage
+FROM node AS builder
+
+WORKDIR /app
+
+COPY package.json ./
+COPY yarn.lock ./
+
+RUN yarn install
+
+COPY . .
+
+RUN yarn run build
+
+# Deploy stage
+FROM node AS final
+
+RUN mkdir -p /home/node/app/build && chown -R node:node /home/node/app
+
+WORKDIR /home/node/app
+
+COPY package.json ./
+COPY yarn.lock ./
+COPY .env ./
+
+USER node
+
+RUN yarn install --prod
+
+COPY --chown=node:node --from=builder /app/build ./build
+RUN ls
+
+ENV NODE_ENV production
+
+# Use js files to run the application
+ENTRYPOINT ["node", "./build/index.js"]

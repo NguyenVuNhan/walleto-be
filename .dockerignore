@@ -1,0 +1,14 @@
+.dockerignore
+.gitignore
+.prettierignore
+.eslintignore
+.eslintrc
+.editorconfig
+README.md
+LICENSE
+
+build
+node_modules
+mongo
+.git
+.vim
