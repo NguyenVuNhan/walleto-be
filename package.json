@@ -7,9 +7,8 @@
   "license": "MIT",
   "main": "build/index.js",
   "scripts": {
-    "watch-server": "nodemon --exec ts-node src/index.ts",
+    "dev": "nodemon --exec ts-node src/index.ts",
     "build-ts": "tsc",
-    "copy-static-assets": "ts-node copyStaticAssets.ts",
     "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
     "serve": "node build/index.js",
     "build": "npm run lint && npm run build-ts && npm run copy-static-assets",
