@@ -9,22 +9,18 @@ import "reflect-metadata";
 
 import { logger } from "./logger";
 import { config } from "./config";
-import { unprotectedRouter } from "./unprotectedRoutes";
-import { protectedRouter } from "./protectedRoutes";
+import { publicRouter, protectedRouter } from "./routes";
 import { cron } from "./cron";
 
 // create connection with database
 // note that its not active database connection
 // TypeORM creates you connection pull to uses connections from pull on your requests
 createConnection({
-  type: "mongodb",
+  type: "postgres",
   url: config.databaseUrl,
   synchronize: true,
   logging: false,
   entities: config.dbEntitiesPath,
-  extra: {
-    ssl: config.dbsslconn, // if not development, will use SSL
-  },
 })
   .then(async () => {
     const app = new Koa();
@@ -42,7 +38,7 @@ createConnection({
     app.use(bodyParser());
 
     // these routes are NOT protected by the JWT middleware, also include middleware to respond with "Method Not Allowed - 405".
-    app.use(unprotectedRouter.routes()).use(unprotectedRouter.allowedMethods());
+    app.use(publicRouter.routes()).use(publicRouter.allowedMethods());
 
     // JWT middleware -> below this line routes are only reached if JWT token is valid, secret as env variable
     // do not protect swagger-json and swagger-html endpoints
@@ -58,6 +54,8 @@ createConnection({
 
     app.listen(config.port);
 
+    // eslint-disable-next-line no-console
     console.log(`Server running on port ${config.port}`);
   })
+  // eslint-disable-next-line no-console
   .catch((error: string) => console.log("TypeORM connection error: ", error));

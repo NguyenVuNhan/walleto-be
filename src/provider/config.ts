@@ -2,29 +2,20 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: ".env" });
 
-export interface Config {
-  port: number;
-  debugLogging: boolean;
-  dbsslconn: boolean;
-  jwtSecret: string;
-  databaseUrl: string;
-  dbEntitiesPath: string[];
-  cronJobExpression: string;
-}
-
 const isDevMode = process.env.NODE_ENV == "development";
 
-const config: Config = {
-  port: +(process.env.PORT || 3000),
+export const config = {
+  apiPrefix: process.env.API_PREFIX || "api",
+  name: process.env.APP_NAME || "My awesome koa app",
+  description: process.env.DESCRIPTION || "App description",
+  port: process.env.PORT || 5000,
   debugLogging: isDevMode,
   dbsslconn: !isDevMode,
-  jwtSecret: process.env.JWT_SECRET || "your-secret-whatever",
+  jwtSecret: process.env.APP_SECRET || "Secret",
   databaseUrl:
-    process.env.DATABASE_URL || "postgres://user:pass@localhost:5432/apidb",
+    process.env.DATABASE_URL || "postgres://admin:admin@localhost:5432/walleto",
   dbEntitiesPath: [
-    ...(isDevMode ? ["src/entity/**/*.ts"] : ["dist/entity/**/*.js"]),
+    ...(isDevMode ? ["src/entity/**/*.ts"] : ["build/entity/**/*.js"]),
   ],
   cronJobExpression: "0 * * * *",
 };
-
-export { config };

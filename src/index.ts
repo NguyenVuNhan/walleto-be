@@ -4,7 +4,25 @@ import cluster from "cluster";
 // import App from "./providers/App";
 // import NativeEvent from "./exception/NativeEvent";
 
+const CPUS: any = cpus();
+
 if (cluster.isMaster) {
+  console.log(`This machine has ${CPUS} CPUs.`);
+  for (let i = 0; i < CPUS; i++) {
+    cluster.fork();
+  }
+
+  cluster.on("online", (worker) => {
+    console.log(`Worker ${worker.process.pid} is online`);
+  });
+
+  cluster.on("exit", (worker, code, signal) => {
+    console.log(
+      `Worker ${worker.process.pid} died with code: ${code} and signal: ${signal}`
+    );
+    console.log("Starting a new worker...");
+    cluster.fork();
+  });
   /**
    * Catches the process events
    */
@@ -20,7 +38,6 @@ if (cluster.isMaster) {
   /**
    * Find the number of available CPUS
    */
-  const CPUS: any = cpus();
   /**
    * Fork the process, the number of times we have CPUs available
    */
