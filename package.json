@@ -11,7 +11,7 @@
     "build-ts": "tsc",
     "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
     "serve": "node build/index.js",
-    "build": "npm run lint && npm run build-ts && npm run copy-static-assets",
+    "build": "npm run lint && npm run build-ts",
     "start": "npm run serve"
   },
   "dependencies": {
@@ -25,6 +25,7 @@
     "koa-helmet": "^6.0.0",
     "koa-jwt": "^4.0.0",
     "koa-swagger-decorator": "^1.7.3",
+    "pg": "^8.5.1",
     "typeorm": "^0.2.30",
     "winston": "^3.3.3"
   },
