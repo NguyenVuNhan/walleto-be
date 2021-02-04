@@ -14,33 +14,32 @@ import { publicRouter, protectedRouter } from "./provider/routes";
 import { cpus } from "os";
 import cluster from "cluster";
 
-// import App from "./providers/App";
 // import NativeEvent from "./exception/NativeEvent";
 
 const CPUS: number = cpus().length;
-console.log(`Starting at port ${config.port}`);
 
 if (cluster.isMaster) {
+  // eslint-disable-next-line no-console
   console.log(`This machine has ${CPUS} CPUs.`);
   for (let i = 0; i < CPUS; i++) {
     cluster.fork();
   }
 
   cluster.on("online", (worker) => {
+    // eslint-disable-next-line no-console
     console.log(`Worker ${worker.process.pid} is online`);
   });
 
   cluster.on("exit", (worker, code, signal) => {
+    // eslint-disable-next-line no-console
     console.log(
       `Worker ${worker.process.pid} died with code: ${code} and signal: ${signal}`
     );
+    // eslint-disable-next-line no-console
     console.log("Starting a new worker...");
     cluster.fork();
   });
 } else {
-  // create connection with database
-  // note that its not active database connection
-  // TypeORM creates you connection pull to uses connections from pull on your requests
   createConnection({
     type: "postgres",
     url: config.databaseUrl,

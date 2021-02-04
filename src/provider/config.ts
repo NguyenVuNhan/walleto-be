@@ -13,7 +13,7 @@ export const config = {
   dbsslconn: !isDevMode,
   jwtSecret: process.env.APP_SECRET || "Secret",
   databaseUrl:
-    process.env.DATABASE_URL || "postgres://admin:admin@localhost:5432/walleto",
+    process.env.DATABASE_URL || "postgres://admin:admin@postgres:5432/walleto",
   dbEntitiesPath: [
     ...(isDevMode ? ["src/entity/**/*.ts"] : ["build/entity/**/*.js"]),
   ],

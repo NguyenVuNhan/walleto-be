@@ -5,7 +5,7 @@ services:
     image: nginx:1.19-alpine
     restart: always
     ports:
-      - "80:80"
+      - 80:80
     links:
       - postgres
       - pgadmin
@@ -16,8 +16,6 @@ services:
   postgres:
     image: postgres:13-alpine
     restart: always
-    ports:
-      - 5432:5432
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: admin
@@ -40,8 +38,6 @@ services:
   server:
     build: .
     container_name: "walleto-server"
-    environment:
-      PORT: ${PORT}
     ports:
       - ${PORT}:${PORT}
       - ${QUEUE_HTTP_PORT}:${QUEUE_HTTP_PORT}
