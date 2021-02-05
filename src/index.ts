@@ -6,12 +6,13 @@ import cors from "@koa/cors";
 import { createConnection } from "typeorm";
 import "reflect-metadata";
 
-import { info, logger } from "./provider/logger";
+import { info } from "./provider/logger";
 import { config } from "./provider/config";
 import { cron } from "./provider/cron";
 import { publicRouter, protectedRouter } from "./provider/routes";
 import { cpus } from "os";
 import cluster from "cluster";
+import log from "./middleware/log";
 
 if (cluster.isMaster) {
   const CPUS: number = cpus().length;
@@ -48,8 +49,8 @@ if (cluster.isMaster) {
       // Enable cors with default options
       app.use(cors());
 
-      // Logger middleware -> use winston as logger (logging.ts with config)
-      app.use(logger);
+      // Logger middleware -> use winston as logger
+      app.use(log());
 
       // Enable bodyParser with default options
       app.use(bodyParser());

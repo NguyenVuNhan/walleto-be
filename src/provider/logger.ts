@@ -1,4 +1,3 @@
-import { Context } from "koa";
 import { config } from "./config";
 import winston, { transports, format } from "winston";
 import * as path from "path";
@@ -21,30 +20,7 @@ winston.configure({
 });
 
 export const info = (msg: string) => winston.info(msg);
+export const warn = (msg: string) => winston.warn(msg);
+export const error = (msg: string) => winston.error(msg);
 
-export const logger = async (
-  ctx: Context,
-  next: () => Promise<any>
-): Promise<void> => {
-  const start = new Date().getTime();
-  try {
-    await next();
-  } catch (err) {
-    ctx.status = err.status || 500;
-    ctx.body = err.message;
-  }
-  const ms = new Date().getTime() - start;
-
-  let logLevel: string;
-  if (ctx.status >= 500) {
-    logLevel = "error";
-  } else if (ctx.status >= 400) {
-    logLevel = "warn";
-  } else {
-    logLevel = "info";
-  }
-
-  const msg = `${ctx.method} ${ctx.originalUrl} ${ctx.status} ${ms}ms`;
-
-  winston.log(logLevel, msg);
-};
+export default winston;
