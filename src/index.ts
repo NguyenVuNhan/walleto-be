@@ -3,40 +3,32 @@ import jwt from "koa-jwt";
 import bodyParser from "koa-bodyparser";
 import helmet from "koa-helmet";
 import cors from "@koa/cors";
-import winston from "winston";
 import { createConnection } from "typeorm";
 import "reflect-metadata";
 
-import { logger } from "./provider/logger";
+import { info, logger } from "./provider/logger";
 import { config } from "./provider/config";
 import { cron } from "./provider/cron";
 import { publicRouter, protectedRouter } from "./provider/routes";
 import { cpus } from "os";
 import cluster from "cluster";
 
-// import NativeEvent from "./exception/NativeEvent";
-
-const CPUS: number = cpus().length;
-
 if (cluster.isMaster) {
-  // eslint-disable-next-line no-console
-  console.log(`This machine has ${CPUS} CPUs.`);
+  const CPUS: number = cpus().length;
+  info(`This machine has ${CPUS} CPUs.`);
   for (let i = 0; i < CPUS; i++) {
     cluster.fork();
   }
 
   cluster.on("online", (worker) => {
-    // eslint-disable-next-line no-console
-    console.log(`Worker ${worker.process.pid} is online`);
+    info(`Worker ${worker.process.pid} is online`);
   });
 
   cluster.on("exit", (worker, code, signal) => {
-    // eslint-disable-next-line no-console
-    console.log(
+    info(
       `Worker ${worker.process.pid} died with code: ${code} and signal: ${signal}`
     );
-    // eslint-disable-next-line no-console
-    console.log("Starting a new worker...");
+    info("Starting a new worker...");
     cluster.fork();
   });
 } else {
@@ -57,7 +49,7 @@ if (cluster.isMaster) {
       app.use(cors());
 
       // Logger middleware -> use winston as logger (logging.ts with config)
-      app.use(logger(winston));
+      app.use(logger);
 
       // Enable bodyParser with default options
       app.use(bodyParser());
