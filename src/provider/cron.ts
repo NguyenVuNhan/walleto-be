@@ -1,9 +1,12 @@
 import { CronJob } from "cron";
 import { config } from "./config";
+import { info } from "./logger";
 
 const cron = new CronJob(config.cronJobExpression, () => {
-  // eslint-disable-next-line no-console
-  console.log("Executing cron job once every hour");
+  info("Starting cron job");
+  // TODO: add cron job here
+
+  info("Cron job finished");
 });
 
 export { cron };
