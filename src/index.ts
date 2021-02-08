@@ -1,8 +1,6 @@
-import { createConnection } from "typeorm";
 import "reflect-metadata";
 
 import { info } from "./provider/logger";
-import { config } from "./provider/config";
 import { cron } from "./provider/cron";
 import { cpus } from "os";
 import cluster from "cluster";
