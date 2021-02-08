@@ -6,6 +6,9 @@ const isDevMode = process.env.NODE_ENV == "development";
 
 export const config = {
   apiPrefix: process.env.API_PREFIX || "api",
+  isCorsEnabled: process.env.CORS_ENABLED || true,
+  url: process.env.APP_URL || `http://localhost`,
+  maxUploadLimit: process.env.APP_MAX_UPLOAD_LIMIT || "50mb",
   name: process.env.APP_NAME || "My awesome koa app",
   description: process.env.DESCRIPTION || "App description",
   port: process.env.PORT || 5000,

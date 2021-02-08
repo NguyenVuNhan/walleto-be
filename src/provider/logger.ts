@@ -24,8 +24,11 @@ winston.configure({
   ],
 });
 
-export const info = (msg: string) => winston.info(msg);
-export const warn = (msg: string) => winston.warn(msg);
-export const error = (msg: string) => winston.error(msg);
+export const info = (msg: string, ...rest: undefined[]) =>
+  winston.info(msg, ...rest);
+export const warn = (msg: string, ...rest: undefined[]) =>
+  winston.warn(msg, ...rest);
+export const error = (msg: string, ...rest: undefined[]) =>
+  winston.error(msg, ...rest);
 
 export default winston;
