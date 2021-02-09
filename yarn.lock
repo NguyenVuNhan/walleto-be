@@ -231,6 +231,14 @@
   dependencies:
     "@types/koa" "*"
 
+"@types/koa-compress@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@types/koa-compress/-/koa-compress-4.0.1.tgz#3afde230ebfe3e7ef8719911f9a58309ca3a32e5"
+  integrity sha512-gIWOZ/Rl6sSV84x5ujVm5nOCgLjY8hMeTwf3j1he5JVVhfOWgE+pK7dxSOQUGG9Pbmdiqz9YDwVFbHBgVfN/Pw==
+  dependencies:
+    "@types/koa" "*"
+    "@types/node" "*"
+
 "@types/koa-helmet@^6.0.1":
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/@types/koa-helmet/-/koa-helmet-6.0.1.tgz#05751bf0fa760ca85a7c9fe02f8b0d00a01571a2"

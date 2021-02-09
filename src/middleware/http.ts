@@ -6,7 +6,7 @@ import { config } from "../provider/config";
 import { info } from "../provider/logger";
 
 export const initHttp = (app: Koa) => {
-  info("Botting the 'HTTP' middleware");
+  info("Booting the 'HTTP' middleware");
 
   // Provides important security headers to make your app more secure
   app.use(helmet());

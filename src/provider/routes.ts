@@ -1,6 +1,4 @@
 import Router from "@koa/router";
-import { SwaggerRouter } from "koa-swagger-decorator";
-import { config } from "./config";
 
 // ----------------------------------------------------------------------
 // Public route
@@ -24,15 +22,12 @@ publicRouter.get("/error", async (ctx) => {
 // ----------------------------------------------------------------------
 // Protected route
 // ----------------------------------------------------------------------
-const protectedRouter = new SwaggerRouter();
+const protectedRouter = new Router();
 
-// Swagger endpoint
-protectedRouter.swagger({
-  title: config.name,
-  description: config.description,
+protectedRouter.get("/protected", async (ctx) => {
+  ctx.body = {
+    hello: "protected",
+  };
 });
-
-// mapDir will scan the input dir, and automatically call router.map to all Router Class
-protectedRouter.mapDir(__dirname);
 
 export { publicRouter, protectedRouter };

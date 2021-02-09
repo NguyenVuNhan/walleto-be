@@ -1,7 +1,7 @@
 import Koa from "koa";
 
-export const errorHandler = (koa: Koa) => {
-  koa.use(async (ctx, next) => {
+export const errorHandler = (app: Koa) => {
+  app.use(async (ctx, next) => {
     try {
       await next();
       const status = ctx.status || 404;
