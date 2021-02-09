@@ -7,8 +7,8 @@ const log = () => async (ctx: Context, next: Next): Promise<void> => {
     await next();
   } catch (err) {
     ctx.status = err.status || 500;
-    ctx.body = err.message;
   }
+
   const ms = new Date().getTime() - start;
 
   let logLevel: string;

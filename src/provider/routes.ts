@@ -7,7 +7,19 @@ import { config } from "./config";
 // ----------------------------------------------------------------------
 const publicRouter = new Router();
 
-// publicRouter.get("/", general.helloWorld);
+publicRouter.get("/", async (ctx) => {
+  ctx.body = {
+    hello: "Hello",
+  };
+});
+
+publicRouter.get("/error", async (ctx) => {
+  ctx.body = {
+    hello: "Hello",
+    fail: 0 / 0,
+  };
+  throw new Error("");
+});
 
 // ----------------------------------------------------------------------
 // Protected route

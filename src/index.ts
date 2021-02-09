@@ -1,5 +1,3 @@
-import "reflect-metadata";
-
 import { info } from "./provider/logger";
 import { cron } from "./provider/cron";
 import { cpus } from "os";
