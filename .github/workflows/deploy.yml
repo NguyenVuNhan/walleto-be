@@ -3,7 +3,7 @@ name: Deploy
 on: [push]
 
 jobs:
-  copy:
+  checkout:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,11 +20,12 @@ jobs:
           source: "Dockerfile.prod,src,package.json,tsconfig.json,yarn.lock,docker-compose.prod.yml,.dockerignore,.eslint*"
           target: ${{ secrets.WORK_DIR }}
 
-  deploy:
+  build:
     runs-on: ubuntu-latest
+    needs: checkout
 
     steps:
-      - name: Build docker image and start server
+      - name: Build docker image
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -36,3 +37,20 @@ jobs:
             cd ${{ secrets.WORK_DIR }}
             mv docker-compose.prod.yml docker-compose.yml
             docker-compose build --no-cache
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Deploy server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PORT: ${{ secrets.PORT }}
+          KEY: ${{ secrets.SSHKEY }}
+          command_timeout: 20m
+          script: |
+            cd ${{ secrets.WORK_DIR }}
+            docker-compose restart
