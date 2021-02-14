@@ -3,7 +3,7 @@ name: Deploy
 on: [push]
 
 jobs:
-  build:
+  copy:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,7 +20,11 @@ jobs:
           source: "Dockerfile.prod,src,package.json,tsconfig.json,yarn.lock,docker-compose.prod.yml,.dockerignore"
           target: ${{ secrets.WORK_DIR }}
 
-      - name: Executing remote command
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build docker image and start server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -32,6 +36,3 @@ jobs:
             cd ${{ secrets.WORK_DIR }}
             mv docker-compose.prod.yml docker-compose.yml
             docker-compose build --no-cache
-            docker-compose restart
-            cd ..
-            docker-compose restart
