@@ -9,7 +9,8 @@
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "typeRoots": ["./src/@types", "./node_modules/@types"]
+    "typeRoots": ["./src/@types", "./node_modules/@types"],
+    "experimentalDecorators": true
   },
   "include": ["src/**/*.ts"],
   "exclude": ["build", "node_modules"]
