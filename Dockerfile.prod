@@ -7,7 +7,7 @@ WORKDIR /app
 
 COPY package.json ./
 COPY yarn.lock ./
-COPY .exlint* ./
+COPY .eslint* ./
 
 RUN yarn install
 
