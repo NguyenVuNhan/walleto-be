@@ -1,6 +1,5 @@
 FROM node:14-alpine AS node
 
-
 # Build stage
 FROM node AS builder
 

@@ -15,14 +15,3 @@ services:
       - walleto
     volumes:
       - ./.logs:/home/node/app/.logs
-    links:
-      - redis
-
-  redis:
-    image: redis
-    container_name: "walleto-redis"
-    networks:
-      - walleto
-    environment:
-      REDIS_QUEUE_PORT: ${REDIS_QUEUE_PORT}
-    command: ["redis-server", "--bind", "redis", "--port", "$REDIS_QUEUE_PORT"]
