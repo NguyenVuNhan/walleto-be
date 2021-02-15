@@ -1,9 +1,12 @@
 import Router from "@koa/router";
+import authRouter from "../routes/api/auth";
 
 // ----------------------------------------------------------------------
 // Public route
 // ----------------------------------------------------------------------
 const publicRouter = new Router();
+
+publicRouter.use("/auth", authRouter.routes(), authRouter.allowedMethods());
 
 publicRouter.get("/", async (ctx) => {
   ctx.body = {
