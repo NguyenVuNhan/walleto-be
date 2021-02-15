@@ -12,7 +12,9 @@ router.swagger({
 });
 
 // mapDir will scan the input dir, and automatically call router.map to all Router Class
-router.mapDir(`${__dirname}`);
+router.mapDir(`${__dirname}/..`, {
+  ignore: ["@types/**/*"],
+});
 
 export const mountSwagger = (app: Koa) => {
   // Change header while using swagger-html
