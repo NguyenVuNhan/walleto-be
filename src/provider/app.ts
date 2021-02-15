@@ -13,19 +13,18 @@ export const loadServer = () => {
   initKoa();
 };
 
-export const loadDatabase = () =>
-  (async () => {
-    info("Database :: Booting @ master ...");
+export const loadDatabase = () => {
+  info("Database :: Booting @ master ...");
 
-    try {
-      createConnection({
-        type: "postgres",
-        url: config.databaseUrl,
-        synchronize: true,
-        logging: false,
-        entities: config.dbEntitiesPath,
-      });
-    } catch (err) {
-      error("TypeORM connection error: ", err);
-    }
-  })();
+  try {
+    createConnection({
+      type: "postgres",
+      url: config.databaseUrl,
+      synchronize: true,
+      logging: false,
+      entities: config.dbEntitiesPath,
+    });
+  } catch (err) {
+    error("TypeORM connection error: ", err);
+  }
+};

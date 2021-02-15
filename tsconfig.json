@@ -10,7 +10,8 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "typeRoots": ["./src/@types", "./node_modules/@types"],
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": ["src/**/*.ts"],
   "exclude": ["build", "node_modules"]

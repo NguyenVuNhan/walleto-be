@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: ".env" });
 
-const isDevMode = process.env.NODE_ENV == "development";
+const isDevMode = process.env.NODE_ENV === "development";
 
 export const config = {
   apiPrefix: process.env.API_PREFIX || "api",
@@ -18,7 +18,9 @@ export const config = {
   databaseUrl:
     process.env.DATABASE_URL || "postgres://admin:admin@postgres:5432/walleto",
   dbEntitiesPath: [
-    ...(isDevMode ? ["src/entity/**/*.ts"] : ["build/entity/**/*.js"]),
+    ...(isDevMode
+      ? [`${__dirname}/../entity/**/*.ts`]
+      : [`${__dirname}/../entity/**/*.js`]),
   ],
   cronJobExpression: "0 * * * *",
 };

@@ -11,4 +11,6 @@ RUN yarn install
 
 COPY . /app/server
 
+ENV NODE_ENV development
+
 CMD ["yarn", "run", "dev"]
