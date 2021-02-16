@@ -10,9 +10,6 @@ import { protectedRouter, publicRouter } from "./routes";
 export const initKoa = () => {
   const app = new Koa();
 
-  // mount handler
-  handler.errorHandler(app);
-
   // mount config
   app.use(async (ctx, next) => {
     ctx.state = { ...ctx.state, ...config };
@@ -21,6 +18,9 @@ export const initKoa = () => {
 
   // mount middleware
   initKernel(app);
+
+  // mount handler
+  handler.errorHandler(app);
 
   // mount routes
 
