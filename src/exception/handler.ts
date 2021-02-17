@@ -1,10 +1,16 @@
-import { validate, ValidationError } from "class-validator";
+import { validate, ValidationError, ValidatorOptions } from "class-validator";
 import Koa, { Context } from "koa";
 
-export const validationErrorHandler = async (object: object, ctx: Context) => {
+export const validationErrorHandler = async (
+  object: object,
+  ctx: Context,
+  options: ValidatorOptions = {}
+) => {
   const errors: ValidationError[] = await validate(object, {
+    skipMissingProperties: true,
     validationError: { target: false },
     stopAtFirstError: true,
+    ...options,
   });
 
   if (errors.length > 0) {
