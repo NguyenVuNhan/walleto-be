@@ -2,7 +2,6 @@ import { Context } from "koa";
 import { body, request, summary } from "koa-swagger-decorator";
 import { getManager, Repository } from "typeorm";
 import { User, userSchema } from "../entity/user";
-import { validationErrorHandler } from "../exception/handler";
 import { pick } from "../helper/utils";
 
 export default class AuthController {
@@ -11,10 +10,10 @@ export default class AuthController {
   @body(pick(userSchema, ["name", "password"]))
   public static async login(ctx: Context): Promise<void> {
     const userRepository: Repository<User> = getManager().getRepository(User);
-    const { name, password } = ctx.request.body;
+    const { name_email, password } = ctx.request.body;
 
     const user: User = await userRepository.findOne({
-      where: [{ email: name }, { name }],
+      where: [{ email: name_email }, { name: name_email }],
     });
 
     if (!user) {
@@ -39,10 +38,6 @@ export default class AuthController {
     newUser.email = ctx.request.body.email;
     newUser.password = ctx.request.body.password;
     newUser.cPassword = ctx.request.body.cpassword;
-
-    await validationErrorHandler(newUser, ctx, {
-      skipMissingProperties: false,
-    });
 
     if (await userRepository.findOne({ name: newUser.name })) {
       ctx.throw(400, "This user name already exists");
