@@ -1,36 +1,14 @@
-import Router from "@koa/router";
+import Koa from "koa";
 import authRouter from "../routes/api/auth";
 
-// ----------------------------------------------------------------------
-// Public route
-// ----------------------------------------------------------------------
-const publicRouter = new Router();
+export const initRouter = (app: Koa) => {
+  // these routes are NOT protected by the JWT middleware, also include middleware to respond with "Method Not Allowed - 405".
+  app.use(authRouter.middleware());
 
-publicRouter.use("/auth", authRouter.routes(), authRouter.allowedMethods());
+  // JWT middleware -> below this line routes are only reached if JWT token is valid, secret as env variable
+  // do not protect swagger-json and swagger-html endpoints
+  // app.use(jwt({ secret: config.jwtSecret }));
 
-publicRouter.get("/", async (ctx) => {
-  ctx.body = {
-    hello: "Hello",
-  };
-});
-
-publicRouter.get("/error", async (ctx) => {
-  ctx.body = {
-    hello: "Hello",
-    fail: 0 / 0,
-  };
-  throw new Error("");
-});
-
-// ----------------------------------------------------------------------
-// Protected route
-// ----------------------------------------------------------------------
-const protectedRouter = new Router();
-
-protectedRouter.get("/protected", async (ctx) => {
-  ctx.body = {
-    hello: "protected",
-  };
-});
-
-export { publicRouter, protectedRouter };
+  // These routes are protected by the JWT middleware, also include middleware to respond with "Method Not Allowed - 405".
+  // app.use(protectedRouter.routes()).use(protectedRouter.allowedMethods());
+};

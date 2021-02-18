@@ -1,5 +1,4 @@
 import bcrypt from "bcryptjs";
-import { IsEmail, IsNotEmpty, Length, Matches } from "class-validator";
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -8,7 +7,6 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { error } from "winston";
-import { Match } from "../helper/validator/Match";
 
 @Entity()
 export class User {
@@ -16,35 +14,14 @@ export class User {
   id: number;
 
   @Column({ length: 80 })
-  @Length(3, 80, {
-    message: "User name should between 3 and 80 characters",
-  })
   name: string;
 
   @Column({ length: 100 })
-  @Length(10, 80, {
-    message: "Email should between 10 and 80 characters",
-  })
-  @IsEmail()
   email: string;
 
   @Column()
-  // @IsDefined({ groups: [registerGroup], message: "Password is required" })
-  @IsNotEmpty({ message: "Password is required" })
-  @Length(4, 20, {
-    message: "Password should between 4 and 20 characters",
-  })
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: "password too weak",
-  })
   password: string;
 
-  // @IsDefined({
-  //   groups: [registerGroup],
-  //   message: "Confirm Password is required",
-  // })
-  @IsNotEmpty({ message: "Confirm password is required" })
-  @Match("password", { message: "Confirm Password not match" })
   cPassword: string;
 
   @BeforeInsert()
@@ -64,19 +41,14 @@ export class User {
     }
   }
 
-  comparePassword(
-    requestPassword: string,
-    cb: (error: Error, result: boolean) => void
-  ): void {
-    bcrypt.compare(requestPassword, this.password, (err, isMatch) => {
-      return cb(err, isMatch);
-    });
+  async comparePassword(requestPassword: string): Promise<boolean> {
+    return await bcrypt.compare(requestPassword, this.password);
   }
 }
 
 export const userSchema = {
-  id: { type: "number", required: true, example: 1 },
   name: { type: "string", required: true, example: "John Doe" },
   email: { type: "string", required: true, example: "j.doe@example" },
   password: { type: "string", required: true, example: "password" },
+  cpassword: { type: "string", required: true, example: "password" },
 };
