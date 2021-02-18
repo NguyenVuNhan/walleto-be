@@ -15,6 +15,7 @@ export const config = {
   debugLogging: isDevMode,
   dbsslconn: !isDevMode,
   jwtSecret: process.env.APP_SECRET || "Secret",
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || 1,
   databaseUrl:
     process.env.DATABASE_URL || "postgres://admin:admin@postgres:5432/walleto",
   dbEntitiesPath: [

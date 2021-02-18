@@ -47,7 +47,8 @@ export class User {
 }
 
 export const userSchema = {
-  name: { type: "string", required: true, example: "John Doe" },
+  name: { type: "string", required: true, example: "JohnDoe" },
+  name_email: { type: "string", required: true, example: "JohnDoe" },
   email: { type: "string", required: true, example: "j.doe@example" },
   password: { type: "string", required: true, example: "password" },
   cpassword: { type: "string", required: true, example: "password" },

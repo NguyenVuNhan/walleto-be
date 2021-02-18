@@ -1,4 +1,4 @@
-import Koa, { Context } from "koa";
+import Koa from "koa";
 
 export const errorHandler = (app: Koa) => {
   app.use(async (ctx, next) => {

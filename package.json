@@ -20,6 +20,7 @@
     "bcryptjs": "^2.4.3",
     "cron": "^1.8.2",
     "dotenv": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
     "koa-compress": "^5.0.1",
@@ -35,6 +36,7 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
     "@types/cron": "^1.7.2",
+    "@types/jsonwebtoken": "^8.5.0",
     "@types/koa": "^2.11.7",
     "@types/koa-bodyparser": "^4.3.0",
     "@types/koa-compress": "^4.0.1",
