@@ -21,12 +21,10 @@ export const initKoa = () => {
   // mount handler
   handler.errorHandler(app);
 
-  // mount routes
+  initRouter(app);
 
   // Api documentation
   mountSwagger(app);
-
-  initRouter(app);
 
   app.listen(config.port);
   info(`Server :: Running @ '${config.url}'`);

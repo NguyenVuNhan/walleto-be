@@ -9,6 +9,16 @@ const router = new SwaggerRouter();
 router.swagger({
   title: config.name,
   description: config.description,
+  swaggerOptions: {
+    securityDefinitions: {
+      BearerAuth: {
+        type: "apiKey",
+        name: "Authorization",
+        scheme: "bearer",
+        in: "header",
+      },
+    },
+  },
 });
 
 // mapDir will scan the input dir, and automatically call router.map to all Router Class

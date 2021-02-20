@@ -1,16 +1,28 @@
 import { sign } from "jsonwebtoken";
 import { Context } from "koa";
-import { body, request, summary } from "koa-swagger-decorator";
-import { getManager, Repository } from "typeorm";
-import { User, userSchema } from "../entity/user";
+import {
+  body,
+  prefix,
+  request,
+  responsesAll,
+  summary,
+  tagsAll,
+} from "koa-swagger-decorator";
+import { getUserRepository, User, userSchema } from "../entity/user";
 import { omit, pick } from "../helper/utils";
 
+@responsesAll({
+  200: { description: "success" },
+  400: { description: "bad request" },
+})
+@tagsAll(["User"])
+@prefix("/auth")
 export default class AuthController {
   @request("post", "/login")
   @summary("User login")
-  @body(pick(userSchema, ["name", "password"]))
+  @body(pick(userSchema, ["name_email", "password"]))
   public static async login(ctx: Context): Promise<void> {
-    const userRepository: Repository<User> = getManager().getRepository(User);
+    const userRepository = getUserRepository();
     const { name_email, password } = ctx.request.body;
 
     const user: User = await userRepository.findOne({
@@ -27,6 +39,7 @@ export default class AuthController {
 
     // Payload
     const payload = {
+      id: user.id,
       name: user.name,
       email: user.email,
     };
@@ -52,7 +65,7 @@ export default class AuthController {
   @summary("Register for new user")
   @body(omit(userSchema, ["name_email"]))
   public static async register(ctx: Context): Promise<void> {
-    const userRepository: Repository<User> = getManager().getRepository(User);
+    const userRepository = getUserRepository();
     const newUser: User = new User();
     newUser.name = ctx.request.body.name;
     newUser.email = ctx.request.body.email;

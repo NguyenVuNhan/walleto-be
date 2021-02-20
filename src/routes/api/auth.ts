@@ -2,8 +2,8 @@ import auth from "../../controller/auth";
 import createRouter, { Joi, Spec } from "koa-joi-router";
 import { pick, omit } from "../../helper/utils";
 
-const route = createRouter();
-route.prefix("/auth");
+const router = createRouter();
+router.prefix("/auth");
 
 const commonValidate = {
   name_email: Joi.string()
@@ -49,6 +49,6 @@ const routes: Spec[] = [
   },
 ];
 
-route.route(routes);
+router.route(routes);
 
-export default route;
+export default router;

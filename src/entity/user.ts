@@ -4,7 +4,9 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  getManager,
   PrimaryGeneratedColumn,
+  Repository,
 } from "typeorm";
 import { error } from "winston";
 
@@ -45,6 +47,10 @@ export class User {
     return await bcrypt.compare(requestPassword, this.password);
   }
 }
+
+export const getUserRepository = (): Repository<User> => {
+  return getManager().getRepository(User);
+};
 
 export const userSchema = {
   name: { type: "string", required: true, example: "JohnDoe" },

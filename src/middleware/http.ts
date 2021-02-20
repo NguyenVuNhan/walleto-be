@@ -4,6 +4,7 @@ import compress from "koa-compress";
 import helmet from "koa-helmet";
 import { config } from "../provider/config";
 import { info } from "../provider/logger";
+import { mountPassport } from "../provider/passport";
 
 export const initHttp = (app: Koa) => {
   info("Booting the 'HTTP' middleware");
@@ -20,6 +21,9 @@ export const initHttp = (app: Koa) => {
   );
 
   app.use(compress());
+
+  // Loads the passport configuration
+  mountPassport(app);
 
   return app;
 };

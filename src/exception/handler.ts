@@ -1,4 +1,5 @@
 import Koa from "koa";
+import { config } from "../provider/config";
 
 export const errorHandler = (app: Koa) => {
   app.use(async (ctx, next) => {
@@ -18,10 +19,15 @@ export const errorHandler = (app: Koa) => {
           msg = err.message;
           errors = err.errors;
           break;
+        case 401:
+          msg = "Unauthorized";
+          break;
         case 404:
           msg = "Not Found";
           break;
         default:
+          // eslint-disable-next-line no-console
+          if (config.debugLogging) console.log(err);
           msg = "Internal Server Error";
       }
       ctx.body = {
