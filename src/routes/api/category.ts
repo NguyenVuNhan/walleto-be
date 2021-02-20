@@ -16,6 +16,7 @@ const routes: Spec[] = [
   {
     method: "post",
     path: "/category",
+    // TODO: add validation
     handler: [category.validateParent, category.addCategory],
   },
   {

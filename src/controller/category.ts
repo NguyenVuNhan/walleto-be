@@ -29,13 +29,31 @@ export default class CategoryController {
   public static async deleteCategory(ctx: Context): Promise<void> {
     const categoryRepository = getCategoryRepository();
 
-    const categories = await categoryRepository.findOne({
-      id: ctx.request.query.id,
-    });
+    const deleteCategory = await categoryRepository.findOne(
+      {
+        id: Number(ctx.request.params.id),
+        user: ctx.state.user,
+      },
+      { relations: ["user", "children"] }
+    );
+
+    if (!deleteCategory) {
+      ctx.throw(400, "Unable to find this category");
+    }
+
+    if (deleteCategory.children.length > 0) {
+      ctx.throw(
+        400,
+        "Unable to delete this category. Remove all it's children then try again."
+      );
+    }
+
+    const category = await categoryRepository.remove(deleteCategory);
+    delete category.user.password;
 
     ctx.body = {
       data: {
-        categories,
+        category,
       },
       message: "New category added!",
       success: true,
