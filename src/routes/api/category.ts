@@ -13,6 +13,11 @@ const routes: Spec[] = [
     path: "/category",
     handler: category.getCategory,
   },
+  {
+    method: "post",
+    path: "/category",
+    handler: [category.validateParent, category.addCategory],
+  },
 ];
 
 router.route(routes);

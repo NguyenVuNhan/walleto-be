@@ -70,7 +70,6 @@ export default class AuthController {
     newUser.name = ctx.request.body.name;
     newUser.email = ctx.request.body.email;
     newUser.password = ctx.request.body.password;
-    newUser.cPassword = ctx.request.body.cpassword;
 
     if (await userRepository.findOne({ name: newUser.name })) {
       ctx.throw(400, "This user name already exists");
@@ -84,7 +83,6 @@ export default class AuthController {
 
     // Hide sensitive fields
     delete user.password;
-    delete user.cPassword;
 
     ctx.status = 200;
     ctx.body = {

@@ -1,11 +1,13 @@
 import {
   Column,
   Entity,
+  getManager,
   Index,
   ManyToOne,
   OneToMany,
   PrimaryColumn,
   PrimaryGeneratedColumn,
+  Repository,
 } from "typeorm";
 import { User } from "./user";
 
@@ -21,24 +23,28 @@ export class Category {
   @Column({ update: false })
   type: string;
 
-  @Column({ default: false })
-  isIncome: boolean;
-
-  @Column({ default: false })
-  isExpense: boolean;
-
-  @ManyToOne(() => User, (user) => user.id, { primary: true })
+  @ManyToOne(() => User, (user) => user.category, {
+    primary: true,
+    cascade: true,
+  })
   user: User;
 
   @ManyToOne(() => Category, (category) => category.children, {
+    cascade: true,
     nullable: true,
   })
   parent: Category;
 
-  @OneToMany(() => Category, (category) => category.parent, { nullable: true })
+  @OneToMany(() => Category, (category) => category.parent)
   children: Category[];
 }
 
+export const getCategoryRepository = (): Repository<Category> => {
+  return getManager().getRepository(Category);
+};
+
 export const categorySchema = {
   name: { type: "string", required: true, example: "Education" },
+  type: { type: "string", required: true, example: "Expense" },
+  parent: { type: "string", required: false, example: "12" },
 };

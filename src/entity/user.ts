@@ -5,10 +5,12 @@ import {
   Column,
   Entity,
   getManager,
+  OneToMany,
   PrimaryGeneratedColumn,
   Repository,
 } from "typeorm";
 import { error } from "winston";
+import { Category } from "./category";
 
 @Entity()
 export class User {
@@ -24,7 +26,8 @@ export class User {
   @Column()
   password: string;
 
-  cPassword: string;
+  @OneToMany(() => Category, (category) => category.user)
+  category: Category[];
 
   @BeforeInsert()
   @BeforeUpdate()

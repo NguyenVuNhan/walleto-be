@@ -9,12 +9,14 @@ const opts: StrategyOptions = {
 
 export const init = (passport: typeof import("koa-passport")): void => {
   passport.use(
-    new Strategy(opts, (payload, done) => {
+    new Strategy(opts, async (payload, done) => {
       const userRepository = getUserRepository();
-      userRepository
-        .findOne(payload.id)
-        .then((user) => (user ? done(null, user) : done(null, false)))
-        .catch((err) => done(err, false));
+      const user = await userRepository.findOne(payload.id);
+
+      // Remove sensitive data
+      delete user.password;
+
+      user ? done(null, user) : done(null, false);
     })
   );
 };
