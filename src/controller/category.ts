@@ -1,6 +1,7 @@
-import { Context } from "koa";
+import { Context, Next } from "koa";
 import {
   body,
+  query,
   request,
   responsesAll,
   securityAll,
@@ -22,6 +23,25 @@ import {
 @tagsAll(["Category"])
 @securityAll([{ BearerAuth: [] }])
 export default class CategoryController {
+  @request("delete", "/category/:id")
+  @summary("Delete a category")
+  @query({ id: { type: "string", required: true, example: "12" } })
+  public static async deleteCategory(ctx: Context): Promise<void> {
+    const categoryRepository = getCategoryRepository();
+
+    const categories = await categoryRepository.findOne({
+      id: ctx.request.query.id,
+    });
+
+    ctx.body = {
+      data: {
+        categories,
+      },
+      message: "New category added!",
+      success: true,
+    };
+  }
+
   @request("get", "/category")
   @summary("Get all user category")
   public static async getCategory(ctx: Context): Promise<void> {
@@ -77,7 +97,8 @@ export default class CategoryController {
     };
   }
 
-  public static async validateParent(ctx: Context): Promise<void> {
+  // Parent validate middleware
+  public static async validateParent(ctx: Context, next: Next): Promise<void> {
     const categoryRepository = getCategoryRepository();
 
     // Check for valid parent id
@@ -105,5 +126,7 @@ export default class CategoryController {
 
       ctx.request.body.parent = parentCategory;
     }
+
+    await next();
   }
 }

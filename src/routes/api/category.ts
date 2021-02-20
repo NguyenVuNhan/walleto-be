@@ -18,6 +18,11 @@ const routes: Spec[] = [
     path: "/category",
     handler: [category.validateParent, category.addCategory],
   },
+  {
+    method: "delete",
+    path: "/category/:id",
+    handler: category.deleteCategory,
+  },
 ];
 
 router.route(routes);
