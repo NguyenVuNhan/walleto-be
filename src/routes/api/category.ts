@@ -22,7 +22,16 @@ const routes: Spec[] = [
   {
     method: "delete",
     path: "/category/:id",
-    handler: category.deleteCategory,
+    handler: [category.findCategoryById, category.deleteCategory],
+  },
+  {
+    method: "post",
+    path: "/category/:id",
+    handler: [
+      category.findCategoryById,
+      category.validateParent,
+      category.updateCategory,
+    ],
   },
 ];
 

@@ -14,6 +14,7 @@ import {
   categorySchema,
   getCategoryRepository,
 } from "../entity/category";
+import { omit, pick } from "../helper/utils";
 
 @responsesAll({
   200: { description: "success" },
@@ -23,9 +24,30 @@ import {
 @tagsAll(["Category"])
 @securityAll([{ BearerAuth: [] }])
 export default class CategoryController {
+  @request("post", "/category/:id")
+  @summary("Update a category")
+  @body(categorySchema)
+  @query(pick(categorySchema, ["id"]))
+  public static async updateCategory(ctx: Context): Promise<void> {
+    const categoryRepository = getCategoryRepository();
+
+    const deleteCategory: Category = ctx.state.category;
+
+    const category = await categoryRepository.remove(deleteCategory);
+    delete category.user.password;
+
+    ctx.body = {
+      data: {
+        category,
+      },
+      message: "Update category success",
+      success: true,
+    };
+  }
+
   @request("delete", "/category/:id")
   @summary("Delete a category")
-  @query({ id: { type: "string", required: true, example: "12" } })
+  @query(pick(categorySchema, ["id"]))
   public static async deleteCategory(ctx: Context): Promise<void> {
     const categoryRepository = getCategoryRepository();
 
@@ -55,7 +77,7 @@ export default class CategoryController {
       data: {
         category,
       },
-      message: "New category added!",
+      message: "Delete category success",
       success: true,
     };
   }
@@ -81,7 +103,7 @@ export default class CategoryController {
 
   @request("post", "/category")
   @summary("Add new category")
-  @body(categorySchema)
+  @body(omit(categorySchema, ["id"]))
   public static async addCategory(ctx: Context): Promise<void> {
     const categoryRepository = getCategoryRepository();
 
@@ -113,6 +135,29 @@ export default class CategoryController {
       message: "New category added!",
       success: true,
     };
+  }
+
+  public static async findCategoryById(
+    ctx: Context,
+    next: Next
+  ): Promise<void> {
+    const categoryRepository = getCategoryRepository();
+
+    const category = await categoryRepository.findOne(
+      {
+        id: Number(ctx.request.params.id),
+        user: ctx.state.user,
+      },
+      { relations: ["user", "children"] }
+    );
+
+    if (!category) {
+      ctx.throw(400, "Unable to find this category");
+    }
+
+    ctx.state.category = category;
+
+    await next();
   }
 
   // Parent validate middleware
