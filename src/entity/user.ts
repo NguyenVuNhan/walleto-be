@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 import { error } from "winston";
 import { Category } from "./category";
+import { Wallet } from "./wallet";
 
 @Entity()
 export class User {
@@ -28,6 +29,9 @@ export class User {
 
   @OneToMany(() => Category, (category) => category.user)
   category: Category[];
+
+  @OneToMany(() => Wallet, (wallet) => wallet.user)
+  wallet: Category[];
 
   @BeforeInsert()
   @BeforeUpdate()
