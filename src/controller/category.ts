@@ -1,6 +1,7 @@
 import { Context, Next } from "koa";
 import {
   body,
+  prefix,
   query,
   request,
   responsesAll,
@@ -23,8 +24,9 @@ import { omit, pick } from "../helper/utils";
 })
 @tagsAll(["Category"])
 @securityAll([{ BearerAuth: [] }])
+@prefix("/category")
 export default class CategoryController {
-  @request("post", "/category/:id")
+  @request("post", "/:id")
   @summary("Update a category")
   @body(categorySchema)
   @query(pick(categorySchema, ["id"]))
@@ -55,7 +57,7 @@ export default class CategoryController {
     };
   }
 
-  @request("delete", "/category/:id")
+  @request("delete", "/:id")
   @summary("Delete a category")
   @query(pick(categorySchema, ["id"]))
   public static async deleteCategory(ctx: Context): Promise<void> {
@@ -92,7 +94,7 @@ export default class CategoryController {
     };
   }
 
-  @request("get", "/category")
+  @request("get", "/")
   @summary("Get all user category")
   public static async getCategory(ctx: Context): Promise<void> {
     const categoryRepository = getCategoryRepository();
@@ -111,7 +113,7 @@ export default class CategoryController {
     };
   }
 
-  @request("post", "/category")
+  @request("post", "/")
   @summary("Add new category")
   @body(omit(categorySchema, ["id"]))
   public static async addCategory(ctx: Context): Promise<void> {
@@ -135,76 +137,5 @@ export default class CategoryController {
       message: "New category added!",
       success: true,
     };
-  }
-
-  public static async findCategoryById(
-    ctx: Context,
-    next: Next
-  ): Promise<void> {
-    const categoryRepository = getCategoryRepository();
-
-    const category = await categoryRepository.findOne(
-      {
-        id: Number(ctx.request.params.id),
-        user: ctx.state.user,
-      },
-      { relations: ["user", "children"] }
-    );
-
-    if (!category) {
-      ctx.throw(400, "Unable to find this category");
-    }
-
-    ctx.state.category = category;
-
-    await next();
-  }
-
-  public static async checkCategoryName(
-    ctx: Context,
-    next: Next
-  ): Promise<void> {
-    const categoryRepository = getCategoryRepository();
-
-    // Check for any category of current user exist with the same name
-    if (
-      await categoryRepository.findOne(
-        { name: ctx.request.body.name, user: ctx.state.user },
-        { relations: ["user"] }
-      )
-    ) {
-      ctx.throw(400, "This category already exists!");
-    }
-
-    await next();
-  }
-
-  // Parent validate middleware
-  public static async validateParent(ctx: Context, next: Next): Promise<void> {
-    const categoryRepository = getCategoryRepository();
-
-    // Check for valid parent id
-    if (ctx.request.body.parent) {
-      const parentCategory = await categoryRepository.findOne(
-        {
-          id: ctx.request.body.parent,
-          type: ctx.request.body.type || ctx.state.category.type,
-        },
-        { relations: ["user", "parent"] }
-      );
-
-      // If user give an invalid parent id
-      if (!parentCategory) {
-        ctx.throw(400, "Cannot find parent category");
-      }
-
-      if (parentCategory.parent) {
-        ctx.throw(400, "Invalid parent category");
-      }
-
-      ctx.request.body.parent = parentCategory;
-    }
-
-    await next();
   }
 }

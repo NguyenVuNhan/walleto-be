@@ -1,45 +1,41 @@
-import createRouter, { Spec } from "koa-joi-router";
+import createRouter from "koa-joi-router";
 import category from "../../controller/category";
 import passport from "koa-passport";
+import {
+  validateCategoryName,
+  validateCategoryId,
+  validateParent,
+  updateValidate,
+  addValidate,
+} from "../../services/validates/category";
 
 const router = createRouter();
+router.prefix("/category");
 router.use(
   passport.authenticate("jwt", { session: false, failWithError: true })
 );
 
-// TODO: add validation
-const routes: Spec[] = [
-  {
-    method: "get",
-    path: "/category",
-    handler: category.getCategory,
-  },
-  {
-    method: "post",
-    path: "/category",
-    handler: [
-      category.checkCategoryName,
-      category.validateParent,
-      category.addCategory,
-    ],
-  },
-  {
-    method: "delete",
-    path: "/category/:id",
-    handler: [category.findCategoryById, category.deleteCategory],
-  },
-  {
-    method: "post",
-    path: "/category/:id",
-    handler: [
-      category.findCategoryById,
-      category.checkCategoryName,
-      category.validateParent,
-      category.updateCategory,
-    ],
-  },
-];
-
-router.route(routes);
+router
+  // Get category
+  .get("/", category.getCategory)
+  // Add category
+  .post(
+    "/",
+    { validate: { body: addValidate, type: "json" } },
+    validateCategoryName,
+    validateParent,
+    category.addCategory
+  )
+  // Update category
+  .post(
+    "/:id",
+    { validate: { body: updateValidate, type: "json" } },
+    validateCategoryId,
+    validateCategoryName,
+    validateParent,
+    category.updateCategory
+  )
+  // Delete category
+  .delete("/:id", validateCategoryId, category.deleteCategory);
 
 export default router;
