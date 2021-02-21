@@ -1,5 +1,5 @@
 import auth from "../../controller/auth";
-import createRouter, { Joi, Spec } from "koa-joi-router";
+import createRouter, { Joi } from "koa-joi-router";
 import { pick, omit } from "../../helper/utils";
 
 const router = createRouter();
@@ -31,24 +31,26 @@ const commonValidate = {
     }),
 };
 
-const routes: Spec[] = [
-  {
-    method: "post",
-    path: "/login",
-    validate: {
-      body: pick(commonValidate, ["name_email", "password"]),
-      type: "form",
+router
+  .post(
+    "/login",
+    {
+      validate: {
+        body: pick(commonValidate, ["name_email", "password"]),
+        type: "form",
+      },
     },
-    handler: auth.login,
-  },
-  {
-    method: "post",
-    path: "/register",
-    validate: { body: omit(commonValidate, ["name_email"]), type: "form" },
-    handler: auth.register,
-  },
-];
-
-router.route(routes);
+    auth.login
+  )
+  .post(
+    "/register",
+    {
+      validate: {
+        body: omit(commonValidate, ["name_email"]),
+        type: "form",
+      },
+    },
+    auth.register
+  );
 
 export default router;
