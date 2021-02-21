@@ -31,9 +31,19 @@ export default class CategoryController {
   public static async updateCategory(ctx: Context): Promise<void> {
     const categoryRepository = getCategoryRepository();
 
-    const deleteCategory: Category = ctx.state.category;
+    const updateCategory: Category = ctx.state.category;
+    const query = {
+      id: updateCategory.id,
+      user: updateCategory.user,
+    };
 
-    const category = await categoryRepository.remove(deleteCategory);
+    // Update category
+    await categoryRepository.update(query, { ...ctx.request.body });
+
+    // Find updated category
+    const category = await categoryRepository.findOne(query, {
+      relations: ["user"],
+    });
     delete category.user.password;
 
     ctx.body = {
@@ -107,16 +117,6 @@ export default class CategoryController {
   public static async addCategory(ctx: Context): Promise<void> {
     const categoryRepository = getCategoryRepository();
 
-    // Check for any category of current user exist with the same name
-    if (
-      await categoryRepository.findOne(
-        { name: ctx.request.body.name, user: ctx.state.user },
-        { relations: ["user"] }
-      )
-    ) {
-      ctx.throw(400, "This category already exists!");
-    }
-
     const newCategory = new Category();
     newCategory.name = ctx.request.body.name;
     newCategory.type = ctx.request.body.type;
@@ -126,7 +126,7 @@ export default class CategoryController {
     // Save new category
     const category = await categoryRepository.save(newCategory);
 
-    delete category.parent.user;
+    delete category.parent?.user;
 
     ctx.body = {
       data: {
@@ -160,6 +160,25 @@ export default class CategoryController {
     await next();
   }
 
+  public static async checkCategoryName(
+    ctx: Context,
+    next: Next
+  ): Promise<void> {
+    const categoryRepository = getCategoryRepository();
+
+    // Check for any category of current user exist with the same name
+    if (
+      await categoryRepository.findOne(
+        { name: ctx.request.body.name, user: ctx.state.user },
+        { relations: ["user"] }
+      )
+    ) {
+      ctx.throw(400, "This category already exists!");
+    }
+
+    await next();
+  }
+
   // Parent validate middleware
   public static async validateParent(ctx: Context, next: Next): Promise<void> {
     const categoryRepository = getCategoryRepository();
@@ -169,17 +188,13 @@ export default class CategoryController {
       const parentCategory = await categoryRepository.findOne(
         {
           id: ctx.request.body.parent,
+          type: ctx.request.body.type || ctx.state.category.type,
         },
         { relations: ["user", "parent"] }
       );
 
       // If user give an invalid parent id
       if (!parentCategory) {
-        ctx.throw(400, "Cannot find parent category");
-      }
-
-      // If the type of current category is different with parent category
-      if (parentCategory.type !== ctx.request.body.type) {
         ctx.throw(400, "Cannot find parent category");
       }
 

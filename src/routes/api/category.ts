@@ -7,6 +7,7 @@ router.use(
   passport.authenticate("jwt", { session: false, failWithError: true })
 );
 
+// TODO: add validation
 const routes: Spec[] = [
   {
     method: "get",
@@ -16,8 +17,11 @@ const routes: Spec[] = [
   {
     method: "post",
     path: "/category",
-    // TODO: add validation
-    handler: [category.validateParent, category.addCategory],
+    handler: [
+      category.checkCategoryName,
+      category.validateParent,
+      category.addCategory,
+    ],
   },
   {
     method: "delete",
@@ -29,6 +33,7 @@ const routes: Spec[] = [
     path: "/category/:id",
     handler: [
       category.findCategoryById,
+      category.checkCategoryName,
       category.validateParent,
       category.updateCategory,
     ],
