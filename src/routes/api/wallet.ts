@@ -18,6 +18,8 @@ router
   // Find wallet
   .get("/:id", validateWalletId, wallet.getWallet)
   // Update wallet
-  .post("/:id", validateWalletId, validateWalletName, wallet.updateWallet);
+  .post("/:id", validateWalletId, validateWalletName, wallet.updateWallet)
+  // Delete wallet
+  .delete("/:id", validateWalletId, wallet.deleteWallet);
 
 export default router;

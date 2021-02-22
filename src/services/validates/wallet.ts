@@ -5,9 +5,13 @@ import { getWalletRepository } from "../../entity/wallet";
 export const validateWalletId = async (ctx: Context, next: Next) => {
   const walletRepository = getWalletRepository();
 
-  const wallet = await walletRepository.findOne({
-    id: Number(ctx.request.params.id),
-  });
+  const wallet = await walletRepository.findOne(
+    {
+      id: Number(ctx.request.params.id),
+      user: ctx.state.user,
+    },
+    { relations: ["user"] }
+  );
 
   if (!wallet) {
     ctx.throw(404, "Unable to find this wallet");

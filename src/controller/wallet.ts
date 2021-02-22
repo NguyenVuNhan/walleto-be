@@ -20,6 +20,22 @@ import { omit } from "../helper/utils";
 @securityAll([{ BearerAuth: [] }])
 @prefix("wallet")
 export default class WalletController {
+  @request("delete", "/:id")
+  @summary("Delete wallet with id")
+  public static async deleteWallet(ctx: Context) {
+    const walletRepository = getWalletRepository();
+
+    const deleteWallet: Wallet = ctx.state.wallet;
+    const wallet = await walletRepository.remove(deleteWallet);
+    delete wallet.user;
+
+    ctx.body = {
+      data: { ...wallet },
+      message: "Wallet found",
+      success: true,
+    };
+  }
+
   @request("post", "/:id")
   @summary("Update wallet with id")
   public static async updateWallet(ctx: Context) {
@@ -43,10 +59,10 @@ export default class WalletController {
   @request("get", "/:id")
   @summary("Find wallet with id")
   public static async getWallet(ctx: Context) {
+    delete ctx.state.wallet.user;
+
     ctx.body = {
-      data: {
-        ...ctx.state.wallet,
-      },
+      data: { ...ctx.state.wallet },
       message: "Wallet found",
       success: true,
     };
@@ -69,9 +85,7 @@ export default class WalletController {
     const wallet = await walletRepository.save(newWallet);
 
     ctx.body = {
-      data: {
-        ...wallet,
-      },
+      data: { ...wallet },
       message: "New wallet created",
       success: true,
     };
