@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  getManager,
   Index,
   ManyToOne,
   PrimaryColumn,
@@ -20,7 +21,7 @@ export class Wallet {
   @Column()
   currency: string;
 
-  @Column()
+  @Column({ default: 0 })
   balance: number;
 
   @Column({ default: false })
@@ -36,4 +37,14 @@ export class Wallet {
   user: User;
 }
 
-export const walletSchema = {};
+export const getWalletRepository = () => {
+  return getManager().getRepository(Wallet);
+};
+
+export const walletSchema = {
+  name: { type: "string", required: true, example: "Saving" },
+  currency: { type: "string", required: true, example: "euro" },
+  balance: { type: "number", required: false, example: "100" },
+  exclude: { type: "boolean", required: false, example: "false" },
+  archive: { type: "boolean", required: false, example: "false" },
+};
