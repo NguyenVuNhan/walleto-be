@@ -44,7 +44,6 @@ export const getCategoryRepository = (): Repository<Category> => {
 };
 
 export const categorySchema = {
-  id: { type: "string", required: true, example: "12" },
   name: { type: "string", required: true, example: "Education" },
   type: { type: "string", required: true, example: "Expense" },
   parent: { type: "string", required: false, example: "12" },

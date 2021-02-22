@@ -1,8 +1,7 @@
-import { Context, Next } from "koa";
+import { Context } from "koa";
 import {
   body,
   prefix,
-  query,
   request,
   responsesAll,
   securityAll,
@@ -15,7 +14,6 @@ import {
   categorySchema,
   getCategoryRepository,
 } from "../entity/category";
-import { omit, pick } from "../helper/utils";
 
 @responsesAll({
   200: { description: "success" },
@@ -29,7 +27,6 @@ export default class CategoryController {
   @request("post", "/:id")
   @summary("Update a category")
   @body(categorySchema)
-  @query(pick(categorySchema, ["id"]))
   public static async updateCategory(ctx: Context): Promise<void> {
     const categoryRepository = getCategoryRepository();
 
@@ -59,7 +56,6 @@ export default class CategoryController {
 
   @request("delete", "/:id")
   @summary("Delete a category")
-  @query(pick(categorySchema, ["id"]))
   public static async deleteCategory(ctx: Context): Promise<void> {
     const categoryRepository = getCategoryRepository();
 
@@ -115,7 +111,7 @@ export default class CategoryController {
 
   @request("post", "/")
   @summary("Add new category")
-  @body(omit(categorySchema, ["id"]))
+  @body(categorySchema)
   public static async addCategory(ctx: Context): Promise<void> {
     const categoryRepository = getCategoryRepository();
 
