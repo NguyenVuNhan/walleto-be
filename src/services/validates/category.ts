@@ -29,7 +29,7 @@ export const validateCategoryId = async (
   );
 
   if (!category) {
-    ctx.throw(400, "Unable to find this category");
+    ctx.throw(404, "Unable to find this category");
   }
 
   ctx.state.category = category;

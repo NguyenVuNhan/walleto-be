@@ -33,22 +33,16 @@ export default class CategoryController {
     const updateCategory: Category = ctx.state.category;
     const query = {
       id: updateCategory.id,
-      user: updateCategory.user,
     };
 
     // Update category
     await categoryRepository.update(query, { ...ctx.request.body });
 
     // Find updated category
-    const category = await categoryRepository.findOne(query, {
-      relations: ["user"],
-    });
-    delete category.user.password;
+    const category = await categoryRepository.findOne(query);
 
     ctx.body = {
-      data: {
-        category,
-      },
+      data: { ...category },
       message: "Update category success",
       success: true,
     };
@@ -82,9 +76,7 @@ export default class CategoryController {
     delete category.user.password;
 
     ctx.body = {
-      data: {
-        category,
-      },
+      data: { ...category },
       message: "Delete category success",
       success: true,
     };
@@ -127,9 +119,7 @@ export default class CategoryController {
     delete category.parent?.user;
 
     ctx.body = {
-      data: {
-        ...category,
-      },
+      data: { ...category },
       message: "New category added!",
       success: true,
     };

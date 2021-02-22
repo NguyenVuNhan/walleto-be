@@ -16,26 +16,36 @@ import { omit } from "../helper/utils";
   400: { description: "bad request" },
   401: { description: "unauthorized, missing/wrong jwt token" },
 })
-@tagsAll(["Category"])
+@tagsAll(["Wallet"])
 @securityAll([{ BearerAuth: [] }])
 @prefix("wallet")
 export default class WalletController {
   @request("post", "/:id")
-  @summary("Find wallet with id")
-  public static async getWallet(ctx: Context) {
+  @summary("Update wallet with id")
+  public static async updateWallet(ctx: Context) {
     const walletRepository = getWalletRepository();
 
-    const wallet = await walletRepository.findOne({
-      id: Number(ctx.request.params.id),
-    });
+    const query = { id: ctx.state.wallet.id };
 
-    if (!wallet) {
-      ctx.throw(400, "Unable to find this wallet");
-    }
+    // Update wallet
+    walletRepository.update(query, { ...ctx.request.body });
+
+    // Get updated wallet
+    const wallet = await walletRepository.findOne(query);
 
     ctx.body = {
+      data: { ...wallet },
+      message: "Wallet found",
+      success: true,
+    };
+  }
+
+  @request("get", "/:id")
+  @summary("Find wallet with id")
+  public static async getWallet(ctx: Context) {
+    ctx.body = {
       data: {
-        ...wallet,
+        ...ctx.state.wallet,
       },
       message: "Wallet found",
       success: true,
@@ -47,15 +57,6 @@ export default class WalletController {
   @body(omit(walletSchema, ["archive"]))
   public static async addWallet(ctx: Context) {
     const walletRepository = getWalletRepository();
-
-    if (
-      await walletRepository.findOne(
-        { name: ctx.request.body.name, user: ctx.state.user },
-        { relations: ["user"] }
-      )
-    ) {
-      ctx.throw(400, "This wallet already exists");
-    }
 
     const newWallet = new Wallet();
     newWallet.name = ctx.request.body.name;
