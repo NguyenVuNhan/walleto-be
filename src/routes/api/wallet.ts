@@ -10,6 +10,8 @@ router.use(
 
 router
   // Add wallet
-  .post("/", wallet.addWallet);
+  .post("/", wallet.addWallet)
+  // Find wallet
+  .get("/:id", wallet.getWallet);
 
 export default router;

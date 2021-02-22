@@ -20,6 +20,28 @@ import { omit } from "../helper/utils";
 @securityAll([{ BearerAuth: [] }])
 @prefix("wallet")
 export default class WalletController {
+  @request("post", "/:id")
+  @summary("Find wallet with id")
+  public static async getWallet(ctx: Context) {
+    const walletRepository = getWalletRepository();
+
+    const wallet = await walletRepository.findOne({
+      id: Number(ctx.request.params.id),
+    });
+
+    if (!wallet) {
+      ctx.throw(400, "Unable to find this wallet");
+    }
+
+    ctx.body = {
+      data: {
+        ...wallet,
+      },
+      message: "Wallet found",
+      success: true,
+    };
+  }
+
   @request("post", "/")
   @summary("Add new wallet")
   @body(omit(walletSchema, ["archive"]))
