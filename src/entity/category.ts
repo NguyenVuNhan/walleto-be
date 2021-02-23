@@ -2,32 +2,34 @@ import {
   Column,
   Entity,
   getManager,
-  Index,
   ManyToOne,
   OneToMany,
-  PrimaryColumn,
   PrimaryGeneratedColumn,
   Repository,
+  Unique,
 } from "typeorm";
+import { Transaction } from "./transaction";
 import { User } from "./user";
 
 @Entity()
-@Index(["name", "user"], { unique: true })
+@Unique(["name", "user"])
 export class Category {
   @PrimaryGeneratedColumn("increment")
   id: number;
 
-  @PrimaryColumn({ length: 80 })
+  @Column({ length: 80 })
   name: string;
 
   @Column({ update: false })
   type: string;
 
   @ManyToOne(() => User, (user) => user.category, {
-    primary: true,
     cascade: true,
   })
   user: User;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.category)
+  transaction: Transaction[];
 
   @ManyToOne(() => Category, (category) => category.children, {
     cascade: true,

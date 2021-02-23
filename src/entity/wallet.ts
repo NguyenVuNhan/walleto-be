@@ -4,9 +4,11 @@ import {
   getManager,
   Index,
   ManyToOne,
+  OneToMany,
   PrimaryColumn,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { Transaction } from "./transaction";
 import { User } from "./user";
 
 @Entity()
@@ -35,6 +37,9 @@ export class Wallet {
     cascade: true,
   })
   user: User;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.category)
+  transaction: Transaction[];
 }
 
 export const getWalletRepository = () => {
