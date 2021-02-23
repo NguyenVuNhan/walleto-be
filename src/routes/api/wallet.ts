@@ -2,6 +2,8 @@ import createRouter from "koa-joi-router";
 import passport from "koa-passport";
 import wallet from "../../controller/wallet";
 import {
+  addValidate,
+  updateValidate,
   validateWalletId,
   validateWalletName,
 } from "../../services/validates/wallet";
@@ -14,11 +16,22 @@ router.use(
 
 router
   // Add wallet
-  .post("/", validateWalletName, wallet.addWallet)
+  .post(
+    "/",
+    { validate: { body: addValidate, type: "json" } },
+    validateWalletName,
+    wallet.addWallet
+  )
   // Find wallet
   .get("/:id", validateWalletId, wallet.getWallet)
   // Update wallet
-  .post("/:id", validateWalletId, validateWalletName, wallet.updateWallet)
+  .post(
+    "/:id",
+    { validate: { body: updateValidate, type: "json" } },
+    validateWalletId,
+    validateWalletName,
+    wallet.updateWallet
+  )
   // Delete wallet
   .delete("/:id", validateWalletId, wallet.deleteWallet);
 
