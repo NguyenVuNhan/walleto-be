@@ -1,7 +1,4 @@
-import { info } from "./provider/logger";
 import { cron } from "./provider/cron";
-import { cpus } from "os";
-import cluster from "cluster";
 import * as app from "./provider/app";
 import * as nativeEvent from "./exception/nativeEvent";
 
