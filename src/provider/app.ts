@@ -13,15 +13,15 @@ export const loadServer = () => {
   initKoa();
 };
 
-export const loadDatabase = () => {
+export const loadDatabase = async () => {
   info("Database :: Booting @ master ...");
 
   try {
-    createConnection({
+    await createConnection({
       type: "postgres",
       url: config.databaseUrl,
-      synchronize: true,
-      logging: false,
+      synchronize: !config.isDevMode,
+      logging: config.debugLogging,
       entities: config.dbEntitiesPath,
     });
   } catch (err) {

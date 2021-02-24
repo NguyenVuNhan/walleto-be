@@ -14,7 +14,7 @@ export class Transaction {
   @PrimaryGeneratedColumn("increment")
   id: number;
 
-  @Column({ type: "text" })
+  @Column({ type: "text", default: "" })
   note: string;
 
   @Column()
@@ -40,4 +40,10 @@ export const getTransactionRepository = () => {
   return getManager().getRepository(Transaction);
 };
 
-export const transactionSchema = {};
+export const transactionSchema = {
+  note: { type: "string", example: "Water bill Nov 28" },
+  amount: { type: "number", example: "1" },
+  date: { type: "string", format: "date" },
+  categoryId: { type: "number", example: "1" },
+  walletId: { type: "number", example: "1" },
+};

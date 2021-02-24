@@ -20,11 +20,12 @@ export const validateCategoryId = async (
 ): Promise<void> => {
   const categoryRepository = getCategoryRepository();
 
+  const id = ctx.request.params.id
+    ? Number(ctx.request.params.id)
+    : ctx.request.body.categoryId;
+
   const category = await categoryRepository.findOne(
-    {
-      id: Number(ctx.request.params.id),
-      user: ctx.state.user,
-    },
+    { id, user: ctx.state.user },
     { relations: ["user", "children"] }
   );
 

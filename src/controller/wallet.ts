@@ -44,7 +44,7 @@ export default class WalletController {
     const query = { id: ctx.state.wallet.id };
 
     // Update wallet
-    walletRepository.update(query, { ...ctx.request.body });
+    await walletRepository.update(query, { ...ctx.request.body });
 
     // Get updated wallet
     const wallet = await walletRepository.findOne(query);

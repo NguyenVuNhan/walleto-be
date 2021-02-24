@@ -20,11 +20,12 @@ export const addValidate = {
 export const validateWalletId = async (ctx: Context, next: Next) => {
   const walletRepository = getWalletRepository();
 
+  const id = ctx.request.params.id
+    ? Number(ctx.request.params.id)
+    : ctx.request.body.walletId;
+
   const wallet = await walletRepository.findOne(
-    {
-      id: Number(ctx.request.params.id),
-      user: ctx.state.user,
-    },
+    { id, user: ctx.state.user },
     { relations: ["user"] }
   );
 
