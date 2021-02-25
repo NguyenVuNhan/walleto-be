@@ -23,7 +23,7 @@ export const errorHandler = (app: Koa) => {
           msg = "Unauthorized";
           break;
         case 404:
-          msg = "Not Found";
+          msg = err.message || "Not Found";
           break;
         default:
           // eslint-disable-next-line no-console
