@@ -66,7 +66,7 @@ export default class TransactionController {
     const transaction: Transaction = ctx.state.transaction;
     const wallet: Wallet = ctx.state.wallet || transaction.wallet;
 
-    // Update new ballance for wallet
+    // Update new balance for wallet
     const amount: number = ctx.request.body.amount;
     if (amount || amount === 0) {
       const balance = wallet.balance - transaction.amount + amount;

@@ -5,7 +5,7 @@ import { getWalletRepository } from "../../entity/wallet";
 export const updateValidate = {
   name: Joi.string().label("Wallet name"),
   currency: Joi.string().label("Currency"),
-  ballance: Joi.number().label("Ballance"),
+  balance: Joi.number().label("Balance"),
   exclude: Joi.bool().label("Is excluded from report"),
   archived: Joi.bool().label("Is archived"),
 };
