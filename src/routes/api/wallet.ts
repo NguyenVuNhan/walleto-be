@@ -23,16 +23,16 @@ router
     wallet.addWallet
   )
   // Find wallet
-  .get("/:id", validateWalletId, wallet.getWallet)
+  .get("/:id", validateWalletId(), wallet.getWallet)
   // Update wallet
   .post(
     "/:id",
     { validate: { body: updateValidate, type: "json" } },
-    validateWalletId,
+    validateWalletId(),
     validateWalletName,
     wallet.updateWallet
   )
   // Delete wallet
-  .delete("/:id", validateWalletId, wallet.deleteWallet);
+  .delete("/:id", validateWalletId(), wallet.deleteWallet);
 
 export default router;

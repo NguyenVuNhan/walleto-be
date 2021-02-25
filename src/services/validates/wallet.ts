@@ -17,23 +17,33 @@ export const addValidate = {
 };
 
 // Validate wallet with given wallet id and save wallet to state
-export const validateWalletId = async (ctx: Context, next: Next) => {
+export const validateWalletId = (ignoreParams = false) => async (
+  ctx: Context,
+  next: Next
+) => {
   const walletRepository = getWalletRepository();
 
-  const id = ctx.request.params.id
+  const id = !ignoreParams
     ? Number(ctx.request.params.id)
     : ctx.request.body.walletId;
 
-  const wallet = await walletRepository.findOne(
-    { id, user: ctx.state.user },
-    { relations: ["user"] }
-  );
+  if (id) {
+    const wallet = await walletRepository.findOne(
+      { id, user: ctx.state.user },
+      { relations: ["user"] }
+    );
 
-  if (!wallet) {
-    ctx.throw(404, "Unable to find this wallet");
+    if (!wallet) {
+      ctx.throw(404, "Unable to find this wallet");
+    }
+
+    ctx.state.wallet = wallet;
+    if (ignoreParams) {
+      delete ctx.request.body.walletId;
+      ctx.request.body.wallet = wallet;
+    }
   }
 
-  ctx.state.wallet = wallet;
   await next();
 };
 

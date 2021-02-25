@@ -30,12 +30,12 @@ router
   .post(
     "/:id",
     { validate: { body: updateValidate, type: "json" } },
-    validateCategoryId,
+    validateCategoryId(),
     validateCategoryName,
     validateParent,
     category.updateCategory
   )
   // Delete category
-  .delete("/:id", validateCategoryId, category.deleteCategory);
+  .delete("/:id", validateCategoryId(), category.deleteCategory);
 
 export default router;

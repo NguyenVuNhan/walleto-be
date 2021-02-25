@@ -24,7 +24,57 @@ import { getWalletRepository, Wallet } from "../entity/wallet";
 @securityAll([{ BearerAuth: [] }])
 @prefix("/transaction")
 export default class TransactionController {
-  @request("post", "/:id")
+  @request("post", "/")
+  @summary("Update a transaction")
+  @body(transactionSchema)
+  public static async updateTransaction(ctx: Context) {
+    const transactionRepository = getTransactionRepository();
+    const walletRepository = getWalletRepository();
+
+    const transaction: Transaction = ctx.state.transaction;
+    const wallet: Wallet = ctx.state.wallet || transaction.wallet;
+
+    // Update new ballance for wallet
+    const amount: number = ctx.request.body.amount;
+    if (amount || amount === 0) {
+      const balance = wallet.balance - transaction.amount + amount;
+      walletRepository.update(
+        { id: wallet.id, user: ctx.state.user },
+        { balance }
+      );
+    }
+
+    // Update transaction and get updated transaction details
+    const query = {
+      id: Number(ctx.request.params.id),
+      user: ctx.state.user,
+    };
+    await transactionRepository.update(query, {
+      ...ctx.request.body,
+    });
+    const updatedTransaction = await transactionRepository.findOne(query);
+
+    ctx.body = {
+      data: { ...updatedTransaction },
+      message: "Update transaction success",
+      success: true,
+    };
+  }
+
+  @request("get", "/:id")
+  @summary("Get a transaction")
+  public static async getTransaction(ctx: Context) {
+    //Remove user sensitive data
+    delete ctx.state.transaction.user.password;
+
+    ctx.body = {
+      data: { ...ctx.state.transaction },
+      message: "Get transaction success",
+      success: true,
+    };
+  }
+
+  @request("post", "/")
   @summary("Add a transaction")
   @body(transactionSchema)
   public static async addTransaction(ctx: Context) {

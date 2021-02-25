@@ -14,26 +14,32 @@ export const addValidate = {
   type: updateValidate.type.required(),
 };
 
-export const validateCategoryId = async (
+export const validateCategoryId = (ignoreParams = false) => async (
   ctx: Context,
   next: Next
 ): Promise<void> => {
   const categoryRepository = getCategoryRepository();
 
-  const id = ctx.request.params.id
+  const id = !ignoreParams
     ? Number(ctx.request.params.id)
     : ctx.request.body.categoryId;
 
-  const category = await categoryRepository.findOne(
-    { id, user: ctx.state.user },
-    { relations: ["user", "children"] }
-  );
+  if (id) {
+    const category = await categoryRepository.findOne(
+      { id, user: ctx.state.user },
+      { relations: ["user", "children"] }
+    );
 
-  if (!category) {
-    ctx.throw(404, "Unable to find this category");
+    if (!category) {
+      ctx.throw(404, "Unable to find this category");
+    }
+
+    ctx.state.category = category;
+    if (ignoreParams) {
+      delete ctx.request.body.categoryId;
+      ctx.request.body.category = category;
+    }
   }
-
-  ctx.state.category = category;
 
   await next();
 };

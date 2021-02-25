@@ -2,7 +2,11 @@ import createRouter from "koa-joi-router";
 import passport from "koa-passport";
 import transaction from "../../controller/transaction";
 import { validateCategoryId } from "../../services/validates/category";
-import { addValidate } from "../../services/validates/transaction";
+import {
+  addValidate,
+  updateValidate,
+  validateTransactionId,
+} from "../../services/validates/transaction";
 import { validateWalletId } from "../../services/validates/wallet";
 
 const router = createRouter();
@@ -12,12 +16,23 @@ router.use(
 );
 
 router
+  // Update transaction
+  .post(
+    "/:id",
+    { validate: { body: updateValidate, type: "json" } },
+    validateTransactionId,
+    validateWalletId(true),
+    validateCategoryId(true),
+    transaction.updateTransaction
+  )
+  //Get transaction
+  .get("/:id", validateTransactionId, transaction.getTransaction)
   //Add transaction
   .post(
     "/",
     { validate: { body: addValidate, type: "json" } },
-    validateWalletId,
-    validateCategoryId,
+    validateWalletId(true),
+    validateCategoryId(true),
     transaction.addTransaction
   );
 
