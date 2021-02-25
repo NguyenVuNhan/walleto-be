@@ -24,6 +24,38 @@ import { getWalletRepository, Wallet } from "../entity/wallet";
 @securityAll([{ BearerAuth: [] }])
 @prefix("/transaction")
 export default class TransactionController {
+  @request("delete", "/:id")
+  @summary("Delete a transaction")
+  public static async deleteTransaction(ctx: Context) {
+    const transactionRepository = getTransactionRepository();
+
+    // Delete transaction
+    const deleteTransaction: Transaction = ctx.state.transaction;
+    const transaction = await transactionRepository.remove(deleteTransaction);
+
+    // Update wallet amount
+    const walletRepository = getWalletRepository();
+    const query = { id: transaction.wallet.id, user: ctx.state.user };
+    const wallet = await walletRepository.findOne(query, {
+      relations: ["user"],
+    });
+    await walletRepository.update(query, {
+      balance: wallet.balance - transaction.amount,
+    });
+
+    // Delete sensitive data
+    delete transaction.user.password;
+    // Remove not important data
+    delete transaction.wallet;
+    delete transaction.category;
+
+    ctx.body = {
+      data: { ...transaction },
+      message: "Wallet found",
+      success: true,
+    };
+  }
+
   @request("post", "/")
   @summary("Update a transaction")
   @body(transactionSchema)

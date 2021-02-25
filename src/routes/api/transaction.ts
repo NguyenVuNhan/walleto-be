@@ -16,6 +16,8 @@ router.use(
 );
 
 router
+  // Delete transaction
+  .delete("/:id", validateTransactionId, transaction.deleteTransaction)
   // Update transaction
   .post(
     "/:id",
