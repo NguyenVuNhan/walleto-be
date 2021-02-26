@@ -26,7 +26,7 @@ import { getWalletRepository, Wallet } from "../entity/wallet";
 export default class TransactionController {
   @request("delete", "/:id")
   @summary("Delete a transaction")
-  public static async deleteTransaction(ctx: Context) {
+  public static async delete(ctx: Context) {
     const transactionRepository = getTransactionRepository();
 
     // Delete transaction
@@ -59,7 +59,7 @@ export default class TransactionController {
   @request("post", "/")
   @summary("Update a transaction")
   @body(transactionSchema)
-  public static async updateTransaction(ctx: Context) {
+  public static async update(ctx: Context) {
     const transactionRepository = getTransactionRepository();
     const walletRepository = getWalletRepository();
 
@@ -95,7 +95,7 @@ export default class TransactionController {
 
   @request("get", "/:id")
   @summary("Get a transaction")
-  public static async getTransaction(ctx: Context) {
+  public static async getOne(ctx: Context) {
     //Remove user sensitive data
     delete ctx.state.transaction.user.password;
 
@@ -109,7 +109,7 @@ export default class TransactionController {
   @request("post", "/")
   @summary("Add a transaction")
   @body(transactionSchema)
-  public static async addTransaction(ctx: Context) {
+  public static async add(ctx: Context) {
     const transactionRepository = getTransactionRepository();
     const walletRepository = getWalletRepository();
 

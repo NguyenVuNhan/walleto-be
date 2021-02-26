@@ -17,25 +17,24 @@ router.use(
 
 router
   // Get category
-  .get("/", category.getCategory)
+  .get("/", category.get)
   // Add category
   .post(
     "/",
     { validate: { body: addValidate, type: "json" } },
     validateCategoryName,
     validateParent,
-    category.addCategory
+    category.add
   )
   // Update category
   .post(
     "/:id",
     { validate: { body: updateValidate, type: "json" } },
-    validateCategoryId(),
     validateCategoryName,
     validateParent,
-    category.updateCategory
+    category.update
   )
   // Delete category
-  .delete("/:id", validateCategoryId(), category.deleteCategory);
+  .delete("/:id", validateCategoryId(), category.delete);
 
 export default router;

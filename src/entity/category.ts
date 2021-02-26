@@ -20,8 +20,8 @@ export class Category {
   @Column({ length: 80 })
   name: string;
 
-  @Column({ update: false })
-  type: string;
+  @Column({ update: false, type: "enum", enum: ["Expense", "Income"] })
+  type: "Expense" | "Income";
 
   @ManyToOne(() => User, (user) => user.category, {
     cascade: true,

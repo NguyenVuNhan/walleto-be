@@ -22,7 +22,7 @@ import { omit } from "../helper/utils";
 export default class WalletController {
   @request("delete", "/:id")
   @summary("Delete wallet with id")
-  public static async deleteWallet(ctx: Context) {
+  public static async delete(ctx: Context) {
     const walletRepository = getWalletRepository();
 
     const deleteWallet: Wallet = ctx.state.wallet;
@@ -38,13 +38,18 @@ export default class WalletController {
 
   @request("post", "/:id")
   @summary("Update wallet with id")
-  public static async updateWallet(ctx: Context) {
+  public static async update(ctx: Context) {
     const walletRepository = getWalletRepository();
 
-    const query = { id: ctx.state.wallet.id };
+    const query = { id: Number(ctx.request.params.id), user: ctx.state.user };
 
     // Update wallet
-    await walletRepository.update(query, { ...ctx.request.body });
+    const updateRes = await walletRepository.update(query, {
+      ...ctx.request.body,
+    });
+    if (!updateRes.affected) {
+      ctx.throw(404, "Unable to find this wallet");
+    }
 
     // Get updated wallet
     const wallet = await walletRepository.findOne(query);
@@ -58,7 +63,7 @@ export default class WalletController {
 
   @request("get", "/:id")
   @summary("Find wallet with id")
-  public static async getWallet(ctx: Context) {
+  public static async getOne(ctx: Context) {
     delete ctx.state.wallet.user;
 
     ctx.body = {
@@ -71,7 +76,7 @@ export default class WalletController {
   @request("post", "/")
   @summary("Add new wallet")
   @body(omit(walletSchema, ["archive"]))
-  public static async addWallet(ctx: Context) {
+  public static async add(ctx: Context) {
     const walletRepository = getWalletRepository();
 
     const newWallet = new Wallet();

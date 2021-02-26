@@ -17,7 +17,7 @@ router.use(
 
 router
   // Delete transaction
-  .delete("/:id", validateTransactionId, transaction.deleteTransaction)
+  .delete("/:id", validateTransactionId, transaction.delete)
   // Update transaction
   .post(
     "/:id",
@@ -25,17 +25,17 @@ router
     validateTransactionId,
     validateWalletId(true),
     validateCategoryId(true),
-    transaction.updateTransaction
+    transaction.update
   )
   //Get transaction
-  .get("/:id", validateTransactionId, transaction.getTransaction)
+  .get("/:id", validateTransactionId, transaction.getOne)
   //Add transaction
   .post(
     "/",
     { validate: { body: addValidate, type: "json" } },
     validateWalletId(true),
     validateCategoryId(true),
-    transaction.addTransaction
+    transaction.add
   );
 
 export default router;

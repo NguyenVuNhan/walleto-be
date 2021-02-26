@@ -20,19 +20,18 @@ router
     "/",
     { validate: { body: addValidate, type: "json" } },
     validateWalletName,
-    wallet.addWallet
+    wallet.add
   )
   // Find wallet
-  .get("/:id", validateWalletId(), wallet.getWallet)
+  .get("/:id", validateWalletId(), wallet.getOne)
   // Update wallet
   .post(
     "/:id",
     { validate: { body: updateValidate, type: "json" } },
-    validateWalletId(),
     validateWalletName,
-    wallet.updateWallet
+    wallet.update
   )
   // Delete wallet
-  .delete("/:id", validateWalletId(), wallet.deleteWallet);
+  .delete("/:id", validateWalletId(), wallet.delete);
 
 export default router;

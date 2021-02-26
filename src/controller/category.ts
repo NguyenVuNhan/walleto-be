@@ -27,16 +27,21 @@ export default class CategoryController {
   @request("post", "/:id")
   @summary("Update a category")
   @body(categorySchema)
-  public static async updateCategory(ctx: Context): Promise<void> {
+  public static async update(ctx: Context): Promise<void> {
     const categoryRepository = getCategoryRepository();
 
-    const updateCategory: Category = ctx.state.category;
     const query = {
-      id: updateCategory.id,
+      id: Number(ctx.request.params.id),
+      user: ctx.state.user,
     };
 
     // Update category
-    await categoryRepository.update(query, { ...ctx.request.body });
+    const updateRes = await categoryRepository.update(query, {
+      ...ctx.request.body,
+    });
+    if (!updateRes.affected) {
+      ctx.throw(404, "Unable to find this category");
+    }
 
     // Find updated category
     const category = await categoryRepository.findOne(query);
@@ -50,7 +55,7 @@ export default class CategoryController {
 
   @request("delete", "/:id")
   @summary("Delete a category")
-  public static async deleteCategory(ctx: Context): Promise<void> {
+  public static async delete(ctx: Context): Promise<void> {
     const categoryRepository = getCategoryRepository();
 
     const deleteCategory: Category = ctx.state.category;
@@ -73,7 +78,7 @@ export default class CategoryController {
 
   @request("get", "/")
   @summary("Get all user category")
-  public static async getCategory(ctx: Context): Promise<void> {
+  public static async get(ctx: Context): Promise<void> {
     const categoryRepository = getCategoryRepository();
 
     const categories = await categoryRepository.find({
@@ -93,7 +98,7 @@ export default class CategoryController {
   @request("post", "/")
   @summary("Add new category")
   @body(categorySchema)
-  public static async addCategory(ctx: Context): Promise<void> {
+  public static async add(ctx: Context): Promise<void> {
     const categoryRepository = getCategoryRepository();
 
     const newCategory = new Category();
