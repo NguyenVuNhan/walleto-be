@@ -24,7 +24,6 @@ export class Transaction {
   date: Date;
 
   @ManyToOne(() => User, (user) => user.transaction, {
-    orphanedRowAction: "delete",
     cascade: true,
   })
   user: User;

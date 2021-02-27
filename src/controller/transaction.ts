@@ -7,7 +7,9 @@ import {
   body,
   request,
   summary,
+  query,
 } from "koa-swagger-decorator";
+import { Between, Equal, MoreThan } from "typeorm";
 import {
   getTransactionRepository,
   Transaction,
@@ -24,6 +26,36 @@ import { getWalletRepository, Wallet } from "../entity/wallet";
 @securityAll([{ BearerAuth: [] }])
 @prefix("/transaction")
 export default class TransactionController {
+  @request("get", "/")
+  @summary("Get all current user transaction")
+  @query({
+    from: { type: "string", format: "date" },
+    to: { type: "string", format: "date" },
+  })
+  public static async getAll(ctx: Context) {
+    const transactionRepository = getTransactionRepository();
+
+    let { from, to } = ctx.request.query;
+    if (!from || !to) {
+      const date: string = new Date().toUTCString().split("T")[0];
+      from = date + "T00:00:00.000Z";
+      to = date + "T23:59:59.999Z";
+    }
+
+    const transactions = await transactionRepository.find({
+      where: {
+        user: ctx.state.user,
+        date: Between(from, to),
+      },
+    });
+
+    ctx.body = {
+      data: { transactions },
+      message: "Get all transaction success",
+      success: true,
+    };
+  }
+
   @request("delete", "/:id")
   @summary("Delete a transaction")
   public static async delete(ctx: Context) {
@@ -42,12 +74,6 @@ export default class TransactionController {
     await walletRepository.update(query, {
       balance: wallet.balance - transaction.amount,
     });
-
-    // Delete sensitive data
-    delete transaction.user.password;
-    // Remove not important data
-    delete transaction.wallet;
-    delete transaction.category;
 
     ctx.body = {
       data: { ...transaction },
@@ -96,9 +122,6 @@ export default class TransactionController {
   @request("get", "/:id")
   @summary("Get a transaction")
   public static async getOne(ctx: Context) {
-    //Remove user sensitive data
-    delete ctx.state.transaction.user.password;
-
     ctx.body = {
       data: { ...ctx.state.transaction },
       message: "Get transaction success",

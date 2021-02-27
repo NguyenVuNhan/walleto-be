@@ -27,6 +27,7 @@ export default class AuthController {
 
     const user: User = await userRepository.findOne({
       where: [{ email: name_email }, { name: name_email }],
+      select: ["id", "name", "email", "password"],
     });
 
     if (!user) {
@@ -52,10 +53,7 @@ export default class AuthController {
     delete user.password;
     ctx.status = 200;
     ctx.body = {
-      data: {
-        ...user,
-        token: "Bearer " + token,
-      },
+      data: { ...user, token: "Bearer " + token },
       message: "Login success!",
       success: true,
     };
@@ -80,9 +78,6 @@ export default class AuthController {
     }
 
     const user = await userRepository.save(newUser);
-
-    // Hide sensitive fields
-    delete user.password;
 
     ctx.status = 200;
     ctx.body = {

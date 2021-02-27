@@ -4,6 +4,7 @@ import transaction from "../../controller/transaction";
 import { validateCategoryId } from "../../services/validates/category";
 import {
   addValidate,
+  timeRangeValidate,
   updateValidate,
   validateTransactionId,
 } from "../../services/validates/transaction";
@@ -16,6 +17,7 @@ router.use(
 );
 
 router
+  .get("/", { validate: { query: timeRangeValidate } }, transaction.getAll)
   // Delete transaction
   .delete("/:id", validateTransactionId, transaction.delete)
   // Update transaction

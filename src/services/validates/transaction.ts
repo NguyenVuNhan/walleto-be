@@ -17,6 +17,22 @@ export const addValidate = {
   walletId: updateValidate.walletId.required(),
 };
 
+export const timeRangeValidate = Joi.object()
+  .keys({
+    from: Joi.date()
+      .iso()
+      .label("From")
+      .when("to", {
+        is: Joi.exist(),
+        then: Joi.date()
+          .max(Joi.ref("to"))
+          .message('"From" must be less than or equal to "To"'),
+      }),
+    to: Joi.date().iso().label("To"),
+  })
+  .with("from", "to")
+  .with("to", "from");
+
 export const validateTransactionId = async (ctx: Context, next: Next) => {
   const transactionRepository = getTransactionRepository();
 

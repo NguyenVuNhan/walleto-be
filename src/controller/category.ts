@@ -67,7 +67,6 @@ export default class CategoryController {
     }
 
     const category = await categoryRepository.remove(deleteCategory);
-    delete category.user.password;
 
     ctx.body = {
       data: { ...category },

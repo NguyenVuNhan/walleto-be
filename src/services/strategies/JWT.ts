@@ -13,9 +13,6 @@ export const init = (passport: typeof import("koa-passport")): void => {
       const userRepository = getUserRepository();
       const user = await userRepository.findOne(payload.id);
 
-      // Remove sensitive data
-      delete user.password;
-
       user ? done(null, user) : done(null, false);
     })
   );
