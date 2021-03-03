@@ -20,7 +20,7 @@ const commonValidate = {
     .required()
     .label("Password")
     .messages({
-      "string.pattern.base": "{{#label}} is too week",
+      "string.pattern.base": "{{#label}} is invalid",
     }),
   cpassword: Joi.any()
     .equal(Joi.ref("password"))
@@ -37,7 +37,7 @@ router
     {
       validate: {
         body: pick(commonValidate, ["name_email", "password"]),
-        type: "form",
+        type: "json"
       },
     },
     auth.login
@@ -47,7 +47,7 @@ router
     {
       validate: {
         body: omit(commonValidate, ["name_email"]),
-        type: "form",
+        type: "json"
       },
     },
     auth.register
