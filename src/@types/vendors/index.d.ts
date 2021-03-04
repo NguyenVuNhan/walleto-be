@@ -7,4 +7,8 @@ declare module "koa" {
   interface DefaultState extends State {
     user: User;
   }
+
+  interface Request {
+    params?: any;
+  }
 }

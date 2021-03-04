@@ -12,7 +12,7 @@ export const errorHandler = (app: Koa) => {
     } catch (err) {
       ctx.status = err.status || 500;
       let msg: string;
-      let errors = [];
+      let errors = {};
 
       switch (ctx.status) {
         case 400:

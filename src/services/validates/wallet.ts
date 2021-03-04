@@ -1,8 +1,9 @@
+import Joi from "joi";
 import { Context, Next } from "koa";
-import { Joi } from "koa-joi-router";
 import { getWalletRepository } from "../../entity/wallet";
+import joiValidate from "./joiValidate";
 
-export const updateValidate = {
+const commonValidate = {
   name: Joi.string().label("Wallet name"),
   currency: Joi.string().label("Currency"),
   balance: Joi.number().label("Balance"),
@@ -10,11 +11,15 @@ export const updateValidate = {
   archived: Joi.bool().label("Is archived"),
 };
 
-export const addValidate = {
-  ...updateValidate,
-  name: updateValidate.name.required(),
-  currency: updateValidate.currency.required(),
-};
+export const updateValidate = joiValidate(Joi.object(commonValidate));
+
+export const addValidate = joiValidate(
+  Joi.object({
+    ...commonValidate,
+    name: commonValidate.name.required(),
+    currency: commonValidate.currency.required(),
+  })
+);
 
 // Validate wallet with given wallet id and save wallet to state
 export const validateWalletId = (ignoreParams = false) => async (

@@ -1,18 +1,23 @@
+import Joi from "joi";
 import { Context, Next } from "koa";
-import { Joi } from "koa-joi-router";
 import { getCategoryRepository } from "../../entity/category";
+import joiValidate from "./joiValidate";
 
-export const updateValidate = {
+const commonValidate = {
   name: Joi.string().label("Category name"),
   type: Joi.string().valid("Expense", "Income").label("Category type"),
   parent: [Joi.number().label("Category parent"), Joi.allow(null)],
 };
 
-export const addValidate = {
-  ...updateValidate,
-  name: updateValidate.name.required(),
-  type: updateValidate.type.required(),
-};
+export const updateValidate = joiValidate(Joi.object(commonValidate));
+
+export const addValidate = joiValidate(
+  Joi.object({
+    ...commonValidate,
+    name: commonValidate.name.required(),
+    type: commonValidate.type.required(),
+  })
+);
 
 export const validateCategoryId = (ignoreParams = false) => async (
   ctx: Context,

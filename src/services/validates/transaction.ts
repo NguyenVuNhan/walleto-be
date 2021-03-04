@@ -1,8 +1,9 @@
+import Joi from "joi";
 import { Context, Next } from "koa";
-import { Joi } from "koa-joi-router";
 import { getTransactionRepository } from "../../entity/transaction";
+import joiValidate from "./joiValidate";
 
-export const updateValidate = {
+export const commonValidate = {
   note: Joi.string().label("Note"),
   amount: Joi.number().label("Amount"),
   date: Joi.date().label("Date"),
@@ -10,28 +11,35 @@ export const updateValidate = {
   walletId: Joi.number().label("Wallet Id"),
 };
 
-export const addValidate = {
-  ...updateValidate,
-  amount: updateValidate.amount.required(),
-  categoryId: updateValidate.categoryId.required(),
-  walletId: updateValidate.walletId.required(),
-};
+export const updateValidate = joiValidate(Joi.object(commonValidate));
 
-export const timeRangeValidate = Joi.object()
-  .keys({
-    from: Joi.date()
-      .iso()
-      .label("From")
-      .when("to", {
-        is: Joi.exist(),
-        then: Joi.date()
-          .max(Joi.ref("to"))
-          .message('"From" must be less than or equal to "To"'),
-      }),
-    to: Joi.date().iso().label("To"),
+export const addValidate = joiValidate(
+  Joi.object({
+    ...commonValidate,
+    amount: commonValidate.amount.required(),
+    categoryId: commonValidate.categoryId.required(),
+    walletId: commonValidate.walletId.required(),
   })
-  .with("from", "to")
-  .with("to", "from");
+);
+
+export const timeRangeValidate = joiValidate(
+  Joi.object()
+    .keys({
+      from: Joi.date()
+        .iso()
+        .label("From")
+        .when("to", {
+          is: Joi.exist(),
+          then: Joi.date()
+            .max(Joi.ref("to"))
+            .message('"From" must be less than or equal to "To"'),
+        }),
+      to: Joi.date().iso().label("To"),
+    })
+    .with("from", "to")
+    .with("to", "from"),
+  { subject: (ctx: Context) => ctx.request.query }
+);
 
 export const validateTransactionId = async (ctx: Context, next: Next) => {
   const transactionRepository = getTransactionRepository();

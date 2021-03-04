@@ -1,4 +1,4 @@
-import createRouter from "koa-joi-router";
+import Router from "@koa/router";
 import passport from "koa-passport";
 import transaction from "../../controller/transaction";
 import { validateCategoryId } from "../../services/validates/category";
@@ -10,20 +10,20 @@ import {
 } from "../../services/validates/transaction";
 import { validateWalletId } from "../../services/validates/wallet";
 
-const router = createRouter();
+const router = new Router();
 router.prefix("/transaction");
 router.use(
   passport.authenticate("jwt", { session: false, failWithError: true })
 );
 
 router
-  .get("/", { validate: { query: timeRangeValidate } }, transaction.getAll)
+  .get("/", timeRangeValidate, transaction.getAll)
   // Delete transaction
   .delete("/:id", validateTransactionId, transaction.delete)
   // Update transaction
   .post(
     "/:id",
-    { validate: { body: updateValidate, type: "json" } },
+    updateValidate,
     validateTransactionId,
     validateWalletId(true),
     validateCategoryId(true),
@@ -34,7 +34,7 @@ router
   //Add transaction
   .post(
     "/",
-    { validate: { body: addValidate, type: "json" } },
+    addValidate,
     validateWalletId(true),
     validateCategoryId(true),
     transaction.add
