@@ -33,10 +33,9 @@ export const timeRangeValidate = joiValidate(
           then: Joi.date()
             .max(Joi.ref("to"))
             .message('"From" must be less than or equal to "To"'),
+          otherwise: Joi.date().max("now"),
         }),
-      to: Joi.date().iso().label("To"),
     })
-    .with("from", "to")
     .with("to", "from"),
   { subject: (ctx: Context) => ctx.request.query }
 );

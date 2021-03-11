@@ -37,9 +37,16 @@ export default class TransactionController {
 
     let { from, to } = ctx.request.query;
     if (!from || !to) {
-      const date: string = new Date().toUTCString().split("T")[0];
-      from = date + "T00:00:00.000Z";
-      to = date + "T23:59:59.999Z";
+      const d = new Date();
+      if (!to) {
+        const date = d.toISOString().split("T")[0];
+        to = date + "T23:59:59.999Z";
+      }
+      if (!from) {
+        d.setDate(1);
+        const date = d.toISOString().split("T")[0];
+        from = date + "T00:00:00.000Z";
+      }
     }
 
     const transactions = await transactionRepository.find({
