@@ -9,7 +9,7 @@ import {
   summary,
   query,
 } from "koa-swagger-decorator";
-import { Between, Equal, MoreThan } from "typeorm";
+import { Between } from "typeorm";
 import {
   getTransactionRepository,
   Transaction,
@@ -49,12 +49,21 @@ export default class TransactionController {
       }
     }
 
-    const transactions = await transactionRepository.find({
-      where: {
+    const transactions: Transaction[] = await transactionRepository
+      .createQueryBuilder("t")
+      .where({
         user: ctx.state.user,
         date: Between(from, to),
-      },
-    });
+      })
+      .leftJoinAndMapOne("t.category", "t.category", "c")
+      .select([
+        "t.id AS id",
+        "t.note AS note",
+        "t.amount AS amount",
+        "t.date AS date",
+        "c.name AS category",
+      ])
+      .getRawMany();
 
     ctx.body = {
       data: { transactions },
