@@ -23,6 +23,9 @@ export class Transaction {
   @Column({ type: "timestamp without time zone", default: () => "now()" })
   date: Date;
 
+  @Column({ type: "boolean", default: false })
+  exclude: boolean;
+
   @ManyToOne(() => User, (user) => user.transaction, {
     cascade: true,
   })

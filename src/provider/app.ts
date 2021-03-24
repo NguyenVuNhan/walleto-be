@@ -20,7 +20,7 @@ export const loadDatabase = async () => {
     await createConnection({
       type: "postgres",
       url: config.databaseUrl,
-      synchronize: !config.isDevMode,
+      synchronize: config.isDevMode,
       logging: config.debugLogging,
       entities: config.dbEntitiesPath,
     });

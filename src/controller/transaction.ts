@@ -162,6 +162,7 @@ export default class TransactionController {
     newTransaction.note = ctx.request.body.note;
     newTransaction.amount = ctx.request.body.amount;
     newTransaction.date = ctx.request.body.date;
+    newTransaction.exclude = ctx.request.body.exclude;
     newTransaction.user = ctx.state.user;
     newTransaction.category = ctx.state.category;
     newTransaction.wallet = wallet;

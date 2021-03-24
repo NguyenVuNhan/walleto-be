@@ -89,7 +89,7 @@ export default class CategoryController {
       data: {
         categories,
       },
-      message: "New category added!",
+      message: "Get categories success",
       success: true,
     };
   }
@@ -100,16 +100,15 @@ export default class CategoryController {
   public static async add(ctx: Context): Promise<void> {
     const categoryRepository = getCategoryRepository();
 
+    const { name, type, parent } = ctx.request.body;
     const newCategory = new Category();
-    newCategory.name = ctx.request.body.name;
-    newCategory.type = ctx.request.body.type;
+    newCategory.name = name;
+    newCategory.type = type;
     newCategory.user = ctx.state.user;
-    newCategory.parent = ctx.request.body.parent;
+    newCategory.parent = parent && parent !== "" ? parent : undefined;
 
     // Save new category
     const category = await categoryRepository.save(newCategory);
-
-    delete category.parent?.user;
 
     ctx.body = {
       data: { ...category },
