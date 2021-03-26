@@ -35,6 +35,23 @@ export default class CategoryController {
       user: ctx.state.user,
     };
 
+    const { parent } = ctx.request.body;
+    if (parent && parent !== "") {
+      ctx.request.body.parent = parent;
+      const updateCategory: Category = ctx.state.category;
+      if (updateCategory.id === parent) {
+        ctx.throw(400, "This category can not be its own parent");
+      }
+      if (updateCategory.children.length > 0) {
+        ctx.throw(
+          400,
+          "Unable to update this category. Remove all it's children then try again."
+        );
+      }
+    } else {
+      ctx.request.body.parent = undefined;
+    }
+
     // Update category
     const updateRes = await categoryRepository.update(query, {
       ...ctx.request.body,

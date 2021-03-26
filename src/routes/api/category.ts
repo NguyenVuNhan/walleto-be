@@ -31,6 +31,7 @@ router.post(
 // Update category
 router.post(
   "/:id",
+  validateCategoryId(),
   updateValidate,
   validateCategoryName,
   validateParent,
