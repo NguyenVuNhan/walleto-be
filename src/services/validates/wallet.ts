@@ -33,10 +33,10 @@ export const validateWalletId = (ignoreParams = false) => async (
     : ctx.request.body.walletId;
 
   if (id) {
-    const wallet = await walletRepository.findOne(
-      { id, user: ctx.state.user },
-      { relations: ["user"] }
-    );
+    const wallet = await walletRepository
+      .createQueryBuilder("w")
+      .where({ id, user: ctx.state.user })
+      .getOne();
 
     if (!wallet) {
       ctx.throw(404, "Unable to find this wallet");

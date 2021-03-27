@@ -66,10 +66,11 @@ export default class WalletController {
   public static async get(ctx: Context) {
     const walletRepository = getWalletRepository();
 
-    const wallets: Wallet[] = await walletRepository.find({
-      where: { user: ctx.state.user },
-      relations: ["user"],
-    });
+    const wallets = await walletRepository
+      .createQueryBuilder("w")
+      .where({ user: ctx.state.user })
+      .select(["w.id", "w.name", "w.balance"])
+      .getMany();
 
     ctx.body = {
       data: { wallets },

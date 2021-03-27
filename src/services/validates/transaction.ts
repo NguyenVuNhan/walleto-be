@@ -45,10 +45,12 @@ export const validateTransactionId = async (ctx: Context, next: Next) => {
   const transactionRepository = getTransactionRepository();
 
   // Find transaction from db
-  const transaction = await transactionRepository.findOne(
-    { id: Number(ctx.request.params.id), user: ctx.state.user },
-    { relations: ["user", "wallet", "category"] }
-  );
+  const transaction = await transactionRepository
+    .createQueryBuilder("t")
+    .where({ id: Number(ctx.request.params.id), user: ctx.state.user })
+    .leftJoinAndSelect("t.category", "category")
+    .leftJoinAndSelect("t.wallet", "wallet")
+    .getMany();
 
   // If unable to find this transaction
   if (!transaction) {

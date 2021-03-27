@@ -97,10 +97,14 @@ export default class CategoryController {
   public static async get(ctx: Context): Promise<void> {
     const categoryRepository = getCategoryRepository();
 
-    const categories = await categoryRepository.find({
-      where: { parent: IsNull() },
-      relations: ["children"],
-    });
+    const categories = await categoryRepository
+      .createQueryBuilder("c")
+      .where({
+        user: ctx.state.user,
+        parent: IsNull(),
+      })
+      .leftJoinAndSelect("c.children", "children")
+      .getMany();
 
     ctx.body = {
       data: {
