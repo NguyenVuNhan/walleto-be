@@ -18,6 +18,8 @@ router.use(
 router
   // Add wallet
   .post("/", addValidate, validateWalletName, wallet.add)
+  // Get all wallet
+  .get("/", wallet.get)
   // Find wallet
   .get("/:id", validateWalletId(), wallet.getOne)
   // Update wallet

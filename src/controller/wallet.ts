@@ -61,11 +61,26 @@ export default class WalletController {
     };
   }
 
+  @request("get", "/")
+  @summary("Get all user wallet")
+  public static async get(ctx: Context) {
+    const walletRepository = getWalletRepository();
+
+    const wallets: Wallet[] = await walletRepository.find({
+      where: { user: ctx.state.user },
+      relations: ["user"],
+    });
+
+    ctx.body = {
+      data: { wallets },
+      message: "Wallet found",
+      success: true,
+    };
+  }
+
   @request("get", "/:id")
   @summary("Find wallet with id")
   public static async getOne(ctx: Context) {
-    delete ctx.state.wallet.user;
-
     ctx.body = {
       data: { ...ctx.state.wallet },
       message: "Wallet found",
