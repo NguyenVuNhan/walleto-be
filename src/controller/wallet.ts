@@ -26,6 +26,7 @@ export default class WalletController {
     const walletRepository = getWalletRepository();
 
     const deleteWallet: Wallet = ctx.state.wallet;
+
     const wallet = await walletRepository.remove(deleteWallet);
     delete wallet.user;
 
@@ -82,6 +83,8 @@ export default class WalletController {
   @request("get", "/:id")
   @summary("Find wallet with id")
   public static async getOne(ctx: Context) {
+    delete ctx.state.wallet.user;
+
     ctx.body = {
       data: { ...ctx.state.wallet },
       message: "Wallet found",
