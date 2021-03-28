@@ -50,7 +50,7 @@ export const validateTransactionId = async (ctx: Context, next: Next) => {
     .where({ id: Number(ctx.request.params.id), user: ctx.state.user })
     .leftJoinAndSelect("t.category", "category")
     .leftJoinAndSelect("t.wallet", "wallet")
-    .getMany();
+    .getOne();
 
   // If unable to find this transaction
   if (!transaction) {
