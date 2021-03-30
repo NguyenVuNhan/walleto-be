@@ -109,8 +109,16 @@ export default class TransactionController {
     const wallet: Wallet = ctx.state.wallet || transaction.wallet;
 
     // Update new balance for wallet
-    const amount: number = ctx.request.body.amount;
+    let amount: number = ctx.request.body.amount;
     if (amount || amount === 0) {
+      const category = ctx.state.category || transaction.category;
+
+      // Check for amount
+      if (category.type === "Expense" && amount > 0) amount *= -1;
+      else if (category.type === "Income" && amount < 0) amount *= -1;
+
+      ctx.request.body.amount = amount;
+
       const balance = wallet.balance - transaction.amount + amount;
       walletRepository.update(
         { id: wallet.id, user: ctx.state.user },
@@ -158,13 +166,18 @@ export default class TransactionController {
       { balance: wallet.balance + ctx.request.body.amount }
     );
 
+    let { note, category, amount, date, exclude } = ctx.request.body;
+
+    if (category.type === "Expense" && amount > 0) amount *= -1;
+    else if (category.type === "Income" && amount < 0) amount *= -1;
+
     const newTransaction = new Transaction();
-    newTransaction.note = ctx.request.body.note;
-    newTransaction.amount = ctx.request.body.amount;
-    newTransaction.date = ctx.request.body.date;
-    newTransaction.exclude = ctx.request.body.exclude;
+    newTransaction.note = note;
+    newTransaction.amount = amount;
+    newTransaction.date = date;
+    newTransaction.exclude = exclude;
     newTransaction.user = ctx.state.user;
-    newTransaction.category = ctx.state.category;
+    newTransaction.category = category;
     newTransaction.wallet = wallet;
 
     const transaction = await transactionRepository.save(newTransaction);

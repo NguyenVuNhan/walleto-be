@@ -4,10 +4,10 @@ import { getTransactionRepository } from "../../entity/transaction";
 import joiValidate from "./joiValidate";
 
 export const commonValidate = {
-  note: Joi.string().max(140).label("Note"),
+  note: Joi.string().allow("").max(140).label("Note"),
   amount: Joi.number().label("Amount"),
   date: Joi.date().label("Date"),
-  required: Joi.boolean(),
+  exclude: Joi.boolean(),
   categoryId: Joi.number().label("Category Id"),
   walletId: Joi.number().label("Wallet Id"),
 };
