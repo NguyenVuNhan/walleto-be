@@ -27,7 +27,7 @@ export const errorHandler = (app: Koa) => {
           break;
         default:
           // eslint-disable-next-line no-console
-          if (config.debugLogging) console.log(err);
+          console.log(err);
           msg = "Internal Server Error";
       }
       ctx.body = {
