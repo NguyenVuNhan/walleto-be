@@ -49,6 +49,9 @@ jobs:
             cd ${{ secrets.WORK_DIR }}
             mv docker-compose.prod.yml docker-compose.yml
             docker-compose build --no-cache
+            docker-compose restart
+            cd ..
+            docker-compose restart
 
   deploy:
     runs-on: ubuntu-latest
